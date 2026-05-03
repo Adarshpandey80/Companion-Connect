@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, Package, ChevronDown } from 'lucide-react';
+import { X, Calendar, Clock, Package, ChevronDown, MapPin, Star, CheckCircle } from 'lucide-react';
 
 function BookingModal({ companion, onClose, onConfirm }) {
   if (!companion) return null;
@@ -44,11 +44,52 @@ function BookingModal({ companion, onClose, onConfirm }) {
         <div className="flex justify-between items-center p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Book Your Session</h2>
-            <p className="text-sm text-gray-600 mt-1">with {companion.name}</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white rounded-full transition flex-shrink-0">
             <X size={24} className="text-gray-600" />
           </button>
+        </div>
+
+        {/* Companion Info Card */}
+        <div className="px-6 pt-6 flex-shrink-0">
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
+            <div className="flex gap-4">
+              {/* Avatar */}
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">
+                {companion.emoji}
+              </div>
+              
+              {/* Details */}
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-800">{companion.name}</h3>
+                <p className="text-sm text-purple-600 font-semibold mb-2">{companion.role}</p>
+                
+                {/* Location */}
+                <div className="flex items-center gap-1 text-sm text-gray-700 mb-1">
+                  <MapPin size={14} className="text-purple-500" />
+                  <span>{companion.location}</span>
+                </div>
+                
+                {/* Rating */}
+                <div className="flex items-center gap-1 text-sm">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="font-semibold text-gray-800">{companion.rating}</span>
+                  <span className="text-gray-600">({companion.reviews} reviews)</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Availability Status */}
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-purple-200">
+              <CheckCircle size={16} className="text-green-500" />
+              <span className="text-sm font-semibold text-green-700">Available Now</span>
+              <span className="text-xs text-gray-600 ml-auto">Next 60 days</span>
+            </div>
+          </div>
         </div>
 
         {/* Body - Scrollable */}
@@ -121,46 +162,51 @@ function BookingModal({ companion, onClose, onConfirm }) {
           </div>
 
           {/* Price Breakdown */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 mt-6 space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Rate per hour</span>
-              <span className="font-semibold text-gray-800">₹{hourlyRate}</span>
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 mt-6 space-y-3 border border-purple-100">
+            <div className="flex items-center justify-between pb-3 border-b border-purple-200">
+              <span className="text-sm text-gray-700 font-medium">Hourly Rate</span>
+              <span className="font-bold text-purple-600">₹{hourlyRate}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Duration</span>
+            <div className="flex items-center justify-between pb-3 border-b border-purple-200">
+              <span className="text-sm text-gray-700 font-medium">Duration</span>
               <span className="font-semibold text-gray-800">{duration} hour{duration > 1 ? 's' : ''}</span>
             </div>
-            {duration > 1 && (
-              <div className="border-t border-purple-200 pt-3 flex justify-between">
-                <span className="font-semibold text-gray-800">Total</span>
-                <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  ₹{totalPrice}
-                </span>
-              </div>
-            )}
-            {duration === 1 && (
-              <div className="border-t border-purple-200 pt-3 flex justify-between">
-                <span className="font-semibold text-gray-800">Total</span>
-                <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  ₹{totalPrice}
-                </span>
-              </div>
-            )}
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-base font-bold text-gray-900">Total Amount</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                ₹{totalPrice}
+              </span>
+            </div>
           </div>
 
           {/* Session Summary */}
           {date && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-xs font-semibold text-blue-900 mb-2">SESSION DETAILS</p>
-              <p className="text-sm text-blue-800">
-                <span className="font-semibold">{companion.name}</span> on {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {time}
-              </p>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 space-y-3">
+              <p className="text-xs font-bold text-blue-900 uppercase tracking-wide">✓ Session Confirmed</p>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-sm font-semibold text-gray-700 min-w-fit">Companion:</span>
+                  <span className="text-sm font-bold text-gray-900">{companion.name}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-sm font-semibold text-gray-700 min-w-fit">Date:</span>
+                  <span className="text-sm font-bold text-gray-900">{new Date(date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-sm font-semibold text-gray-700 min-w-fit">Time:</span>
+                  <span className="text-sm font-bold text-gray-900">{time} - {String(parseInt(time) + duration).padStart(2, '0')}:00</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-sm font-semibold text-gray-700 min-w-fit">Duration:</span>
+                  <span className="text-sm font-bold text-gray-900">{duration} hour{duration > 1 ? 's' : ''}</span>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t bg-gray-50 flex gap-3 flex-shrink-0">
+        <div className="p-6 border-t bg-gradient-to-r from-gray-50 to-purple-50 flex gap-3 flex-shrink-0">
           <button
             onClick={onClose}
             className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition"
@@ -170,7 +216,7 @@ function BookingModal({ companion, onClose, onConfirm }) {
           <button
             onClick={handleConfirm}
             disabled={!date}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl disabled:shadow-none"
           >
             Confirm Booking
           </button>
