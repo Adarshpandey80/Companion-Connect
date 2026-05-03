@@ -4,8 +4,14 @@ import Reveal from './Reveal';
 import SectionTag from './SectionTag';
 import { COMPANIONS } from '../data/companions';
 
-function CompanionCard({ c, onOpen }) {
+function CompanionCard({ c, onOpen, onHire }) {
   const [hov, setHov] = useState(false);
+  
+  const handleHireClick = (e) => {
+    e.stopPropagation();
+    onHire && onHire(c);
+  };
+  
   return (
     <div 
       onMouseOver={() => setHov(true)} 
@@ -48,7 +54,10 @@ function CompanionCard({ c, onOpen }) {
             </span>
           ))}
         </div>
-        <button className="w-full py-3 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white border-none rounded-[14px] text-[0.9rem] font-bold cursor-pointer">
+        <button 
+          onClick={handleHireClick}
+          className="w-full py-3 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white border-none rounded-[14px] text-[0.9rem] font-bold cursor-pointer"
+        >
           Hire Now
         </button>
       </div>
@@ -56,7 +65,7 @@ function CompanionCard({ c, onOpen }) {
   );
 }
 
-function CompanionsSection({ onOpen }) {
+function CompanionsSection({ onOpen, onHire }) {
   const [filter, setFilter] = useState({ gender: "All", city: "Any", interest: "", rating: 0, price: 3000 });
   
   const filtered = COMPANIONS.filter(c => {
@@ -89,7 +98,7 @@ function CompanionsSection({ onOpen }) {
       <div className="grid grid-cols-[repeat(auto-fill,minmax(255px,1fr))] gap-7">
         {filtered.map((c, i) => (
           <Reveal key={c.id} delay={i * 0.05}>
-            <CompanionCard c={c} onOpen={onOpen} />
+            <CompanionCard c={c} onOpen={onOpen} onHire={onHire} />
           </Reveal>
         ))}
       </div>

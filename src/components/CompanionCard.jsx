@@ -1,10 +1,10 @@
 import React from 'react';
 import { MapPin, Star } from 'lucide-react';
 
-function CompanionCard({ c, onOpen }) {
+function CompanionCard({ c, onOpen, onHire }) {
   const handleHireClick = (e) => {
     e.stopPropagation();
-    onOpen && onOpen(c);
+    onHire && onHire(c);
   };
 
   return (

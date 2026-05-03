@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CompanionCard from '../components/CompanionCard';
 import FilterSection from '../components/FilterSection';
 
-function FindCompanions({ companions, onOpen }) {
+function FindCompanions({ companions, onOpen, onHire }) {
   const [filteredCompanions, setFilteredCompanions] = useState(companions);
 
   const handleFilter = (filters) => {
@@ -45,7 +45,7 @@ function FindCompanions({ companions, onOpen }) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCompanions.map(companion => (
-                <CompanionCard key={companion.id} c={companion} onOpen={onOpen} />
+                <CompanionCard key={companion.id} c={companion} onOpen={onOpen} onHire={onHire} />
               ))}
             </div>
           )}

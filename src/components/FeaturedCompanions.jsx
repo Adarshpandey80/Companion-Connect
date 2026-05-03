@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import CompanionCard from './CompanionCard'
 import { COMPANIONS } from '../data/companions'
 
-export default function FeaturedCompanions() {
+export default function FeaturedCompanions({ onOpen, onHire }) {
   return (
     <section id="companions" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 w-full">
       <div className="w-full max-w-7xl mx-auto">
@@ -36,7 +36,7 @@ export default function FeaturedCompanions() {
               viewport={{ once: true, margin: '-50px' }}
               transition={{ delay: index * 0.1 }}
             >
-              <CompanionCard companion={companion} />
+              <CompanionCard c={companion} onOpen={onOpen} onHire={onHire} />
             </motion.div>
           ))}
         </motion.div>

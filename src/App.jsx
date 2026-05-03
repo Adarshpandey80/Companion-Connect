@@ -114,7 +114,7 @@ function AppContent() {
             <div className="h-16" />
             <HowItWorks />
             <div className="h-16" />
-            <CompanionSection onOpen={openProfile} />
+            <CompanionSection onOpen={openProfile} onHire={handleHire} />
             <div className="h-16" />
             <FilterSection onShowToast={showToast} />
             <div className="h-16" />
@@ -132,7 +132,7 @@ function AppContent() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
-        <Route path="/find-companions" element={<FindCompanions companions={COMPANIONS} onOpen={openProfile} />} />
+        <Route path="/find-companions" element={<FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />} />
         <Route path="/companion/:id" element={<CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />} />
       </Routes>
       <Footer onBecome={openForm} />
