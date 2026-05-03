@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Star, MapPin, Clock } from 'lucide-react';
 
-function ProfileModal({ companion, onClose }) {
+function ProfileModal({ companion, onClose, onHire }) {
+  const [showBooking, setShowBooking] = useState(false);
+
   if (!companion) return null;
+
+  if (showBooking) {
+    return null; // BookingModal will be handled in App.jsx
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -16,15 +22,17 @@ function ProfileModal({ companion, onClose }) {
         
         <div className="p-6 space-y-6">
           <div className="flex gap-6">
-            <div className="w-48 h-64 bg-gray-200 rounded-lg flex-shrink-0" />
+            <div className="w-48 h-64 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex-shrink-0 flex items-center justify-center text-7xl">
+              {companion.emoji}
+            </div>
             <div className="flex-1">
               <p className="text-lg text-gray-700 mb-4">{companion.role}</p>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} /> {companion.location}
+                  <MapPin size={16} className="text-purple-500" /> {companion.location}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock size={16} /> {companion.availability}
+                  <Clock size={16} className="text-purple-500" /> {companion.availability}
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex">
@@ -38,7 +46,10 @@ function ProfileModal({ companion, onClose }) {
             </div>
           </div>
 
-          <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold">
+          <button 
+            onClick={() => onHire(companion)}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition text-lg"
+          >
             Hire for ₹{companion.price}/hour
           </button>
         </div>

@@ -12,6 +12,8 @@ import CTA from './components/CTA';
 import Footer from './components/Footer';
 import ProfileModal from './components/ProfileModal';
 import ChatModal from './components/ChatModal';
+import BookingModal from './components/BookingModal';
+import BookingConfirmation from './components/BookingConfirmation';
 import BecomeCompanionForm from './components/BecomeCompanionForm';
 import SuccessModal from './components/SuccessModal';
 import Toast from './components/Toast';
@@ -30,6 +32,8 @@ import './styles/global.css';
 function AppContent() {
   const [selectedCompanion, setSelectedCompanion] = useState(null);
   const [chatCompanion, setChatCompanion] = useState(null);
+  const [bookingCompanion, setBookingCompanion] = useState(null);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [successName, setSuccessName] = useState(null);
   const [toast, setToast] = useState({ show: false, msg: "" });
@@ -81,6 +85,24 @@ function AppContent() {
   const handleBook = (name) => showToast(`🎉 Booking request sent to ${name.split(" ")[0]}!`);
   const handleChat = () => { setChatCompanion(selectedCompanion); setSelectedCompanion(null); };
   const handleFormSuccess = (name) => { setShowForm(false); setSuccessName(name); };
+  
+  const handleHire = (companion) => {
+    setBookingCompanion(companion);
+    setSelectedCompanion(null);
+  };
+  
+  const handleCloseBooking = () => {
+    setBookingCompanion(null);
+  };
+  
+  const handleConfirmBooking = (booking) => {
+    setConfirmedBooking(booking);
+    setBookingCompanion(null);
+  };
+  
+  const handleCloseConfirmation = () => {
+    setConfirmedBooking(null);
+  };
 
   return (
     <>
@@ -116,7 +138,13 @@ function AppContent() {
       <Footer onBecome={openForm} />
 
       {selectedCompanion && (
-        <ProfileModal companion={selectedCompanion} onClose={closeProfile} onBook={handleBook} onChat={handleChat} />
+        <ProfileModal companion={selectedCompanion} onClose={closeProfile} onBook={handleBook} onChat={handleChat} onHire={handleHire} />
+      )}
+      {bookingCompanion && (
+        <BookingModal companion={bookingCompanion} onClose={handleCloseBooking} onConfirm={handleConfirmBooking} />
+      )}
+      {confirmedBooking && (
+        <BookingConfirmation booking={confirmedBooking} onClose={handleCloseConfirmation} />
       )}
       {chatCompanion && (
         <ChatModal companion={chatCompanion} onClose={() => setChatCompanion(null)} />

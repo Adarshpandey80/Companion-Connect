@@ -4,12 +4,16 @@ import { motion } from 'framer-motion'
 import { Star, MapPin, Clock, MessageCircle, Heart, Share2, ChevronLeft, Calendar, Users } from 'lucide-react'
 import { COMPANIONS } from '../data/companions'
 import { REVIEWS } from '../data/reviews'
+import BookingModal from '../components/BookingModal'
+import BookingConfirmation from '../components/BookingConfirmation'
 
 export default function CompanionProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
   const companion = COMPANIONS.find(c => c.id === parseInt(id))
   const [isWishlisted, setIsWishlisted] = React.useState(false)
+  const [showBookingModal, setShowBookingModal] = React.useState(false)
+  const [confirmedBooking, setConfirmedBooking] = React.useState(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -127,6 +131,7 @@ export default function CompanionProfile() {
             {/* Action Buttons */}
             <div className="space-y-3">
               <motion.button
+                onClick={() => setShowBookingModal(true)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition"
@@ -224,6 +229,24 @@ export default function CompanionProfile() {
           </div>
         </motion.div>
       </div>
+
+      {showBookingModal && (
+        <BookingModal 
+          companion={companion} 
+          onClose={() => setShowBookingModal(false)}
+          onConfirm={(booking) => {
+            setConfirmedBooking(booking);
+            setShowBookingModal(false);
+          }}
+        />
+      )}
+
+      {confirmedBooking && (
+        <BookingConfirmation 
+          booking={confirmedBooking} 
+          onClose={() => setConfirmedBooking(null)}
+        />
+      )}
     </div>
   )
 }

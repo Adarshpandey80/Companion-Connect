@@ -2,6 +2,11 @@ import React from 'react';
 import { MapPin, Star } from 'lucide-react';
 
 function CompanionCard({ c, onOpen }) {
+  const handleHireClick = (e) => {
+    e.stopPropagation();
+    onOpen && onOpen(c);
+  };
+
   return (
     <div
       onClick={() => onOpen && onOpen(c)}
@@ -29,7 +34,10 @@ function CompanionCard({ c, onOpen }) {
 
         <div className="flex justify-between items-center">
           <span className="text-lg font-bold text-purple-600">₹{c.price}/hr</span>
-          <button className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-600">
+          <button 
+            onClick={handleHireClick}
+            className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-600 transition"
+          >
             Hire
           </button>
         </div>
