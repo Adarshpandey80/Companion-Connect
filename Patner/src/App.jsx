@@ -17,6 +17,8 @@ import BookingConfirmation from './components/BookingConfirmation';
 import BecomeCompanionForm from './components/BecomeCompanionForm';
 import SuccessModal from './components/SuccessModal';
 import Toast from './components/Toast';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
 import About from './pages/About';
 import HowItWorksPage from './pages/HowItWorksPage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -26,6 +28,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CompanionProfile from './pages/FindCompanion';
 import FindCompanions from './pages/FindCompanions';
+import BecomeCompanionPage from './pages/BecomeCompanionPage';
 import { COMPANIONS } from './data/companions';
 import './styles/global.css';
 
@@ -37,6 +40,8 @@ function AppContent() {
   const [showForm, setShowForm] = useState(false);
   const [successName, setSuccessName] = useState(null);
   const [toast, setToast] = useState({ show: false, msg: "" });
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
   const toastTimer = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,13 +109,21 @@ function AppContent() {
     setConfirmedBooking(null);
   };
 
+  const handleGetStarted = () => {
+    if (location.pathname === '/become-companion') {
+      setShowSignup(true);
+    } else {
+      setShowLogin(true);
+    }
+  };
+
   return (
     <>
-      <Nav onBecome={openForm} scrollToSection={scrollToSection} />
+      <Nav onBecome={handleGetStarted} scrollToSection={scrollToSection} />
       <Routes>
         <Route path="/" element={
           <>
-            <Hero onFind={scrollToCompanions} onBecome={openForm} />
+            <Hero onFind={scrollToCompanions} onBecome={handleGetStarted} />
             <div className="h-16" />
             <HowItWorks />
             <div className="h-16" />
@@ -122,7 +135,7 @@ function AppContent() {
             <div className="h-16" />
             <Safety />
             <div className="h-16" />
-            <CTA onFind={scrollToCompanions} onBecome={openForm} />
+            <CTA onFind={scrollToCompanions} onBecome={handleGetStarted} />
           </>
         } />
         <Route path="/about" element={<About />} />
@@ -134,8 +147,9 @@ function AppContent() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/find-companions" element={<FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />} />
         <Route path="/companion/:id" element={<CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />} />
+        <Route path="/become-companion" element={<BecomeCompanionPage onBecomeClick={handleGetStarted} onShowToast={showToast} />} />
       </Routes>
-      <Footer onBecome={openForm} />
+      <Footer onBecome={handleGetStarted} />
 
       {selectedCompanion && (
         <ProfileModal companion={selectedCompanion} onClose={closeProfile} onBook={handleBook} onChat={handleChat} onHire={handleHire} />
@@ -145,6 +159,32 @@ function AppContent() {
       )}
       {confirmedBooking && (
         <BookingConfirmation booking={confirmedBooking} onClose={handleCloseConfirmation} />
+      )}
+      {showLogin && (
+        <Login
+          onClose={() => setShowLogin(false)}
+          onSwitchToSignup={() => {
+            setShowLogin(false);
+            setShowSignup(true);
+          }}
+          onSuccess={(msg) => {
+            showToast(msg);
+            setShowLogin(false);
+          }}
+        />
+      )}
+      {showSignup && (
+        <SignUp
+          onClose={() => setShowSignup(false)}
+          onSwitchToLogin={() => {
+            setShowSignup(false);
+            setShowLogin(true);
+          }}
+          onSuccess={(msg) => {
+            showToast(msg);
+            setShowSignup(false);
+          }}
+        />
       )}
       {chatCompanion && (
         <ChatModal companion={chatCompanion} onClose={() => setChatCompanion(null)} />

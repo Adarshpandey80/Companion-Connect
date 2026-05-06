@@ -64,6 +64,12 @@ function Nav({ onBecome, scrollToSection }) {
             Find Companions
           </Link>
           <Link 
+            to="/become-companion" 
+            className="text-xs sm:text-sm text-[#2d1b4e] font-medium cursor-pointer transition-colors duration-200 no-underline hover:text-[#e879a0]"
+          >
+            Become Companion
+          </Link>
+          <Link 
             to="/reviews" 
             className="text-xs sm:text-sm text-[#2d1b4e] font-medium cursor-pointer transition-colors duration-200 no-underline hover:text-[#e879a0]"
           >
@@ -114,6 +120,13 @@ function Nav({ onBecome, scrollToSection }) {
             Find Companions
           </Link>
           <Link 
+            to="/become-companion" 
+            onClick={() => setMobileOpen(false)} 
+            className="text-sm sm:text-base text-[#2d1b4e] font-medium cursor-pointer text-left no-underline hover:text-[#e879a0] transition-colors"
+          >
+            Become Companion
+          </Link>
+          <Link 
             to="/reviews" 
             onClick={() => setMobileOpen(false)} 
             className="text-sm sm:text-base text-[#2d1b4e] font-medium cursor-pointer text-left no-underline hover:text-[#e879a0] transition-colors"
@@ -131,7 +144,7 @@ function Nav({ onBecome, scrollToSection }) {
             onClick={() => { handleBecomeClick(); setMobileOpen(false); }} 
             className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer w-full mt-2 hover:shadow-lg transition-all"
           >
-            Become a Companion
+            Get Started
           </button>
         </div>
       )}
