@@ -2,29 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Users, TrendingUp, Shield, Award, Clock } from 'lucide-react';
 import Nav from '../components/Nav';
-import Footer from '../components/Footer';
-import Login from '../components/Login';
-import SignUp from '../components/SignUp';
+import BecomeCompanionForm from '../components/BecomeCompanionForm';
 
 function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const navigate = useNavigate();
 
-  const handleGetStarted = () => {
-    setShowSignup(true);
+  const handleBecome = () => {
+    setShowForm(true);
   };
 
-  const handleLoginSuccess = (msg) => {
-    onShowToast?.(msg || 'Login successful! Welcome back.');
+  const handleFormSuccess = (msg) => {
+    onShowToast?.(msg || 'Application submitted successfully!');
   };
 
-  const handleSignupSuccess = (msg) => {
-    onShowToast?.(msg || 'Account created successfully!');
-  };
-
-  const closeLogin = () => setShowLogin(false);
-  const closeSignup = () => setShowSignup(false);
+  const closeForm = () => setShowForm(false);
 
   const benefits = [
     {
@@ -86,10 +78,10 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
               Become part of a thriving community and earn competitive income by providing meaningful companionship services. We connect you with clients who value your time and expertise.
             </p>
             <button
-              onClick={handleGetStarted}
+              onClick={handleBecome}
               className="bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              Get Started Today
+              Become a Companion
             </button>
           </div>
 
@@ -184,7 +176,7 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
               Join thousands of professional companions earning competitive income. Sign up today and start accepting bookings!
             </p>
             <button
-              onClick={handleGetStarted}
+              onClick={handleBecome}
               className="bg-white text-[#e879a0] px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-50 transition-all duration-300 hover:shadow-lg"
             >
               Create Your Profile
@@ -193,27 +185,11 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
         </div>
       </div>
 
-      <Footer onBecome={onBecomeClick} />
-
-      {/* Modals */}
-      {showLogin && (
-        <Login
-          onClose={closeLogin}
-          onSwitchToSignup={() => {
-            setShowLogin(false);
-            setShowSignup(true);
-          }}
-          onSuccess={handleLoginSuccess}
-        />
-      )}
-      {showSignup && (
-        <SignUp
-          onClose={closeSignup}
-          onSwitchToLogin={() => {
-            setShowSignup(false);
-            setShowLogin(true);
-          }}
-          onSuccess={handleSignupSuccess}
+      {/* Modal */}
+      {showForm && (
+        <BecomeCompanionForm
+          onClose={closeForm}
+          onSuccess={handleFormSuccess}
         />
       )}
     </>
