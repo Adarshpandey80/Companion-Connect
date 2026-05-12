@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, AlertCircle } from 'lucide-react';
+import axios from 'axios';
 
 function Login({ onClose, onSwitchToSignup, onSuccess }) {
   const [email, setEmail] = useState('');
@@ -13,17 +14,21 @@ function Login({ onClose, onSwitchToSignup, onSuccess }) {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const apiUrl = `${import.meta.env.VITE_SERVER_URL}/user/login`;
+      const response = await axios.post(apiUrl, { email, password });
       
-      if (email && password) {
-        onSuccess(`Welcome back!`);
+      if (response.data && response.data.token) {
+        // Save token and user data to localStorage
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        onSuccess(`Welcome back, ${response.data.user.fullName}!`);
         onClose();
       } else {
-        setError('Please fill in all fields');
+        setError('Login failed. Invalid response from server.');
       }
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

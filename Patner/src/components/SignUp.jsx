@@ -66,12 +66,21 @@ function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
 
     setLoading(true);
     try {
-      const apiUrl = `${import.meta.env.SERVER_URL}/user/signup`;
-      const response = await axios.post( apiUrl, formData);
-      onSuccess(`Welcome ${formData.fullName.split(' ')[0]}!`);
-      onClose();
+      const apiUrl = `${import.meta.env.VITE_SERVER_URL}/user/signup`;
+      const response = await axios.post(apiUrl, formData);
+      
+      if (response.data && response.data.token) {
+        // Save token and user data to localStorage
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        onSuccess(`Welcome ${formData.fullName.split(' ')[0]}!`);
+        onClose();
+      } else {
+        setError('Signup failed. Invalid response from server.');
+      }
     } catch (err) {
-      setError('Signup failed. Please try again.');
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
