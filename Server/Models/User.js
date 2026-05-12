@@ -55,7 +55,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Index for email uniqueness
-userSchema.index({ email: 1 });
-
 module.exports = mongoose.model('User', userSchema);
