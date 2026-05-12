@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, AlertCircle, CheckCircle } from 'lucide-react';
 
+import axios from 'axios';
 function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -65,8 +66,8 @@ function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const apiUrl = `${import.meta.env.SERVER_URL}/user/signup`;
+      const response = await axios.post( apiUrl, formData);
       onSuccess(`Welcome ${formData.fullName.split(' ')[0]}!`);
       onClose();
     } catch (err) {
