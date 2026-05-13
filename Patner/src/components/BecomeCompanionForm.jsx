@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, CheckCircle } from 'lucide-react';
+import { X, CheckCircle, AlertCircle } from 'lucide-react';
+import axios from 'axios';
 
 function BecomeCompanionForm({ onClose, onSuccess }) {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const serviceOptions = [
     'Shopping',
@@ -47,17 +50,57 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    
     if (!formData.agreeTerms) {
-      alert('Please agree to the terms and conditions');
+      setError('Please agree to the terms and conditions');
       return;
     }
-    setSubmitted(true);
-    onSuccess(formData.fullName);
-    setTimeout(() => {
-      onClose();
-    }, 2000);
+
+    if (formData.services.length === 0) {
+      setError('Please select at least one service');
+      return;
+    }
+
+    if (formData.bio.length < 20) {
+      setError('Bio must be at least 20 characters');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const apiUrl = `${import.meta.env.VITE_SERVER_URL}/user/become-companion`;
+      const payload = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        age: parseInt(formData.age),
+        bio: formData.bio,
+        experience: formData.experience,
+        services: formData.services,
+        availability: formData.availability,
+        hourlyRate: parseFloat(formData.rates),
+        agreeTerms: formData.agreeTerms
+      };
+
+      const response = await axios.post(apiUrl, payload);
+      
+      if (response.data && response.data.companion) {
+        setSubmitted(true);
+        onSuccess(formData.fullName);
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to submit application. Please try again.');
+      console.error('Error submitting companion form:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -92,6 +135,14 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Error Message */}
+          {error && (
+            <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle size={18} className="text-red-600 flex-shrink-0" />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           {/* Personal Information Section */}
           <div>
             <h3 className="text-lg font-bold text-[#2d1b4e] mb-4">Personal Information</h3>
@@ -272,9 +323,10 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Application
+            {loading ? 'Submitting...' : 'Submit Application'}
           </button>
         </form>
       </div>
