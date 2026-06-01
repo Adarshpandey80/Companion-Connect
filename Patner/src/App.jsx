@@ -1,5 +1,5 @@
 // App.js
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
@@ -29,6 +29,7 @@ import TermsOfService from './pages/TermsOfService';
 import CompanionProfile from './pages/FindCompanion';
 import FindCompanions from './pages/FindCompanions';
 import BecomeCompanionPage from './pages/BecomeCompanionPage';
+import UserProfile from './pages/UserProfile';
 import { COMPANIONS } from './data/companions';
 import './styles/global.css';
 
@@ -42,6 +43,7 @@ function AppContent() {
   const [toast, setToast] = useState({ show: false, msg: "" });
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [userLogoutTrigger, setUserLogoutTrigger] = useState(0);
   const toastTimer = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,6 +52,10 @@ function AppContent() {
     setToast({ show: true, msg });
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast({ show: false, msg }), 3500);
+  }, []);
+
+  const handleUserLogout = useCallback(() => {
+    setUserLogoutTrigger(prev => prev + 1);
   }, []);
 
   const openProfile = (c) => {
@@ -119,7 +125,7 @@ function AppContent() {
 
   return (
     <>
-      <Nav onBecome={handleGetStarted} scrollToSection={scrollToSection} />
+      <Nav onBecome={handleGetStarted} scrollToSection={scrollToSection} onUserLogout={handleUserLogout} key={userLogoutTrigger} />
       <Routes>
         <Route path="/" element={
           <>
@@ -148,6 +154,7 @@ function AppContent() {
         <Route path="/find-companions" element={<FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />} />
         <Route path="/companion/:id" element={<CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />} />
         <Route path="/become-companion" element={<BecomeCompanionPage onBecomeClick={handleGetStarted} onShowToast={showToast} />} />
+        <Route path="/user-profile" element={<UserProfile />} />
       </Routes>
       <Footer onBecome={handleGetStarted} />
 

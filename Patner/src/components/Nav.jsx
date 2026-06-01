@@ -1,13 +1,44 @@
 // components/Nav.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import useNav from '../hooks/useNav';
 
-function Nav({ onBecome, scrollToSection }) {
+function Nav({ onBecome, scrollToSection, onUserLogout }) {
   const scrolled = useNav();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const profileRef = React.useRef(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (err) {
+        console.error('Failed to parse user data:', err);
+      }
+    }
+  }, []);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+
+    if (profileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [profileOpen]);
 
   const handleNavClick = (sectionId, e) => {
     e.preventDefault();
@@ -20,6 +51,31 @@ function Nav({ onBecome, scrollToSection }) {
   const handleBecomeClick = () => {
     onBecome();
     setMobileOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setProfileOpen(false);
+    navigate('/');
+    if (onUserLogout) {
+      onUserLogout();
+    }
+  };
+
+  const handleProfileClick = () => {
+    setProfileOpen(false);
+    navigate('/user-profile');
+  };
+
+  const getInitials = (fullName) => {
+    return fullName
+      ?.split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || 'U';
   };
 
   return (
@@ -81,12 +137,50 @@ function Nav({ onBecome, scrollToSection }) {
           >
             Safety
           </Link>
-          <button 
-            onClick={handleBecomeClick} 
-            className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer shadow-[0_4px_16px_rgba(232,121,160,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(232,121,160,0.5)] whitespace-nowrap"
-          >
-            Get Started
-          </button>
+          
+          {/* Profile Icon or Get Started Button */}
+          {user ? (
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-white font-semibold cursor-pointer hover:shadow-lg transition-all duration-200"
+                title={user.fullName}
+              >
+                {getInitials(user.fullName)}
+              </button>
+
+              {/* Profile Dropdown Menu */}
+              {profileOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-[#e879a0]/10 to-[#b355e0]/10">
+                    <p className="text-sm font-semibold text-[#2d1b4e]">{user.fullName}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={handleProfileClick}
+                    className="w-full px-4 py-3 text-left text-sm text-[#2d1b4e] font-medium hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                  >
+                    <User size={16} className="text-[#e879a0]" />
+                    View Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-3 text-left text-sm text-red-600 font-medium hover:bg-red-50 flex items-center gap-2 transition-colors border-t border-gray-100"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button 
+              onClick={handleBecomeClick} 
+              className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-5 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer shadow-[0_4px_16px_rgba(232,121,160,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(232,121,160,0.5)] whitespace-nowrap"
+            >
+              Get Started
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -140,12 +234,41 @@ function Nav({ onBecome, scrollToSection }) {
           >
             Safety
           </Link>
-          <button 
-            onClick={() => { handleBecomeClick(); setMobileOpen(false); }} 
-            className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer w-full mt-2 hover:shadow-lg transition-all"
-          >
-            Get Started
-          </button>
+          
+          {/* Mobile Profile or Get Started */}
+          {user ? (
+            <>
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <button
+                  onClick={() => {
+                    handleProfileClick();
+                    setMobileOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm text-[#2d1b4e] font-medium hover:bg-gray-100 rounded flex items-center gap-2 transition-colors"
+                >
+                  <User size={16} className="text-[#e879a0]" />
+                  View Profile
+                </button>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm text-red-600 font-medium hover:bg-red-50 rounded flex items-center gap-2 transition-colors mt-2"
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <button 
+              onClick={() => { handleBecomeClick(); setMobileOpen(false); }} 
+              className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer w-full mt-2 hover:shadow-lg transition-all"
+            >
+              Get Started
+            </button>
+          )}
         </div>
       )}
       
