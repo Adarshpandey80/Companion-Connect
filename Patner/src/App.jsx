@@ -2,6 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Nav from './components/Nav';
+import ProtectedRoute from './components/ProtectedRoute';
 import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
 import CompanionSection from './components/CompanionSection';
@@ -44,9 +45,16 @@ function AppContent() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [userLogoutTrigger, setUserLogoutTrigger] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const toastTimer = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, [userLogoutTrigger]);
 
   const showToast = useCallback((msg) => {
     setToast({ show: true, msg });
@@ -56,9 +64,14 @@ function AppContent() {
 
   const handleUserLogout = useCallback(() => {
     setUserLogoutTrigger(prev => prev + 1);
+    setIsAuthenticated(false);
   }, []);
 
   const openProfile = (c) => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
     setSelectedCompanion(c);
     navigate(`/companion/${c.id}`);
   };
@@ -72,11 +85,12 @@ function AppContent() {
   const closeForm = () => setShowForm(false);
 
   const scrollToCompanions = () => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
     if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById("companions")?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      navigate('/find-companions');
     } else {
       document.getElementById("companions")?.scrollIntoView({ behavior: "smooth" });
     }
@@ -93,11 +107,30 @@ function AppContent() {
     }
   };
 
-  const handleBook = (name) => showToast(`🎉 Booking request sent to ${name.split(" ")[0]}!`);
-  const handleChat = () => { setChatCompanion(selectedCompanion); setSelectedCompanion(null); };
+  const handleBook = (name) => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
+    showToast(`🎉 Booking request sent to ${name.split(" ")[0]}!`);
+  };
+  
+  const handleChat = () => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
+    setChatCompanion(selectedCompanion);
+    setSelectedCompanion(null);
+  };
+  
   const handleFormSuccess = (name) => { setShowForm(false); setSuccessName(name); };
   
   const handleHire = (companion) => {
+    if (!isAuthenticated) {
+      setShowLogin(true);
+      return;
+    }
     setBookingCompanion(companion);
     setSelectedCompanion(null);
   };
@@ -151,10 +184,26 @@ function AppContent() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
-        <Route path="/find-companions" element={<FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />} />
-        <Route path="/companion/:id" element={<CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />} />
-        <Route path="/become-companion" element={<BecomeCompanionPage onBecomeClick={handleGetStarted} onShowToast={showToast} />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/find-companions" element={
+          <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
+            <FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />
+          </ProtectedRoute>
+        } />
+        <Route path="/companion/:id" element={
+          <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
+            <CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />
+          </ProtectedRoute>
+        } />
+        <Route path="/become-companion" element={
+          <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
+            <BecomeCompanionPage onBecomeClick={handleGetStarted} onShowToast={showToast} />
+          </ProtectedRoute>
+        } />
+        <Route path="/user-profile" element={
+          <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
+            <UserProfile />
+          </ProtectedRoute>
+        } />
       </Routes>
       <Footer onBecome={handleGetStarted} />
 
@@ -177,6 +226,7 @@ function AppContent() {
           onSuccess={(msg) => {
             showToast(msg);
             setShowLogin(false);
+            setIsAuthenticated(true);
           }}
         />
       )}
@@ -190,6 +240,7 @@ function AppContent() {
           onSuccess={(msg) => {
             showToast(msg);
             setShowSignup(false);
+            setIsAuthenticated(true);
           }}
         />
       )}
