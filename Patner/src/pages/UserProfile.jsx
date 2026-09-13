@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Star, Edit2, LogOut } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Star, Edit2, LogOut, ShieldCheck, ShoppingBag, Loader2 } from 'lucide-react';
+import axios from 'axios';
 
 function UserProfile() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+
     if (userData) {
       try {
         setUser(JSON.parse(userData));
@@ -17,12 +23,37 @@ function UserProfile() {
       }
     }
     setLoading(false);
+
+    if (token) {
+      fetchBookings(token);
+    } else {
+      setLoadingBookings(false);
+    }
   }, []);
+
+  const fetchBookings = async (token) => {
+    try {
+      setLoadingBookings(true);
+      const res = await axios.get(`${serverUrl}/bookings/my-bookings`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.data && res.data.bookings) {
+        setBookings(res.data.bookings);
+      }
+    } catch (err) {
+      console.error('Failed to fetch user bookings:', err);
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/');
+    window.location.reload();
   };
 
   if (loading) {
@@ -38,13 +69,13 @@ function UserProfile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#2d1b4e] mb-4">Not Logged In</h2>
-          <p className="text-gray-600 mb-6">Please login to view your profile.</p>
+      <div className="min-h-screen bg-linear-to-br from-purple-50 to-pink-50 flex items-center justify-center p-4">
+        <div className="text-center bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full">
+          <h2 className="text-2xl font-bold text-[#2d1b4e] mb-2">Not Logged In</h2>
+          <p className="text-gray-600 mb-6">Please login to view your profile and bookings.</p>
           <button
             onClick={() => navigate('/')}
-            className="bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+            className="w-full bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
           >
             Go Home
           </button>
@@ -53,48 +84,12 @@ function UserProfile() {
     );
   }
 
-  // Mock data for service history
-  const serviceStats = {
-    totalServices: 8,
-    completedServices: 7,
-    upcomingServices: 1,
-    totalHours: 24,
-    averageRating: 4.8,
-    totalReviews: 12,
-  };
-
-  const serviceHistory = [
-    {
-      id: 1,
-      companionName: 'Sarah Johnson',
-      companionRole: 'Career Coach',
-      serviceDate: '2024-05-20',
-      duration: '2 hours',
-      status: 'Completed',
-      amount: '₹500',
-      rating: 5,
-    },
-    {
-      id: 2,
-      companionName: 'Michael Chen',
-      companionRole: 'Life Coach',
-      serviceDate: '2024-05-15',
-      duration: '3 hours',
-      status: 'Completed',
-      amount: '₹600',
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      companionName: 'Emma Watson',
-      companionRole: 'Travel Companion',
-      serviceDate: '2024-06-01',
-      duration: '4 hours',
-      status: 'Upcoming',
-      amount: '₹800',
-      rating: null,
-    },
-  ];
+  // Calculate dynamic stats from real bookings
+  const todayStr = new Date().toISOString().split('T')[0];
+  const totalServices = bookings.length;
+  const upcomingServices = bookings.filter((b) => b.date >= todayStr).length;
+  const completedServices = bookings.filter((b) => b.date < todayStr).length;
+  const totalHours = bookings.reduce((acc, b) => acc + (b.duration || 0), 0);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-50 to-pink-50 pt-20">
@@ -103,7 +98,7 @@ function UserProfile() {
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate('/')}
-            className="p-2 hover:bg-white rounded-lg transition-colors"
+            className="p-2 hover:bg-white rounded-lg transition-colors cursor-pointer"
           >
             <ArrowLeft size={24} className="text-[#2d1b4e]" />
           </button>
@@ -116,7 +111,7 @@ function UserProfile() {
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
               {/* Profile Avatar */}
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-linear-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-4xl font-bold text-white shadow-lg">
                   {user.fullName
                     ?.split(' ')
                     .map((n) => n[0])
@@ -130,7 +125,9 @@ function UserProfile() {
               <h2 className="text-2xl font-bold text-center text-[#2d1b4e] mb-1">
                 {user.fullName}
               </h2>
-              <p className="text-center text-gray-500 text-sm mb-6">Member since {new Date().getFullYear()}</p>
+              <p className="text-center text-gray-500 text-sm mb-6">
+                {user.userType === 'companion' ? 'Companion Account' : 'Client Member'}
+              </p>
 
               {/* User Details */}
               <div className="space-y-4 border-t border-gray-100 pt-4">
@@ -163,16 +160,19 @@ function UserProfile() {
                 )}
               </div>
 
-              {/* Edit Profile Button */}
-              <button className="w-full mt-6 flex items-center justify-center gap-2 bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white py-2 rounded-lg font-semibold hover:shadow-lg transition-all">
-                <Edit2 size={16} />
-                Edit Profile
+              {/* Browse Companions Button */}
+              <button
+                onClick={() => navigate('/find-companions')}
+                className="w-full mt-6 flex items-center justify-center gap-2 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all"
+              >
+                <ShoppingBag size={16} />
+                Find Companions
               </button>
 
               {/* Logout Button */}
               <button
                 onClick={handleLogout}
-                className="w-full mt-3 flex items-center justify-center gap-2 bg-red-100 text-red-600 py-2 rounded-lg font-semibold hover:bg-red-200 transition-all"
+                className="w-full mt-3 flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2.5 rounded-xl font-semibold hover:bg-red-100 transition-all cursor-pointer"
               >
                 <LogOut size={16} />
                 Logout
@@ -184,12 +184,12 @@ function UserProfile() {
           <div className="lg:col-span-2 space-y-8">
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Total Services */}
+              {/* Total Bookings */}
               <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-[#e879a0]">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-500 text-sm font-medium mb-1">Total Services</p>
-                    <p className="text-3xl font-bold text-[#2d1b4e]">{serviceStats.totalServices}</p>
+                    <p className="text-gray-500 text-sm font-medium mb-1">Total Bookings</p>
+                    <p className="text-3xl font-bold text-[#2d1b4e]">{totalServices}</p>
                   </div>
                   <div className="w-12 h-12 bg-linear-to-br from-[#e879a0]/20 to-[#b355e0]/20 rounded-full flex items-center justify-center">
                     <Calendar size={24} className="text-[#e879a0]" />
@@ -202,10 +202,23 @@ function UserProfile() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Total Hours</p>
-                    <p className="text-3xl font-bold text-[#2d1b4e]">{serviceStats.totalHours}</p>
+                    <p className="text-3xl font-bold text-[#2d1b4e]">{totalHours}</p>
                   </div>
                   <div className="w-12 h-12 bg-linear-to-br from-[#b355e0]/20 to-[#e879a0]/20 rounded-full flex items-center justify-center">
                     <Clock size={24} className="text-[#b355e0]" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Upcoming Services */}
+              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm font-medium mb-1">Upcoming</p>
+                    <p className="text-3xl font-bold text-[#2d1b4e]">{upcomingServices}</p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Calendar size={24} className="text-blue-600" />
                   </div>
                 </div>
               </div>
@@ -215,95 +228,100 @@ function UserProfile() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-500 text-sm font-medium mb-1">Completed</p>
-                    <p className="text-3xl font-bold text-[#2d1b4e]">{serviceStats.completedServices}</p>
+                    <p className="text-3xl font-bold text-[#2d1b4e]">{completedServices}</p>
                   </div>
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <Calendar size={24} className="text-green-600" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Average Rating */}
-              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-500 text-sm font-medium mb-1">Avg Rating</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-3xl font-bold text-[#2d1b4e]">{serviceStats.averageRating}</p>
-                      <Star size={20} className="text-yellow-400 fill-yellow-400" />
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">{serviceStats.totalReviews} reviews</p>
+                    <Star size={24} className="text-green-600" />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Service History */}
+            {/* Booked Sessions History */}
             <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-              <h2 className="text-2xl font-bold text-[#2d1b4e] mb-6">Service History</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-[#2d1b4e]">Booked Sessions</h2>
+                <span className="text-xs font-semibold px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
+                  Razorpay Integrated
+                </span>
+              </div>
 
-              {serviceHistory.length === 0 ? (
+              {loadingBookings ? (
                 <div className="text-center py-12">
+                  <Loader2 size={32} className="animate-spin mx-auto text-purple-500 mb-2" />
+                  <p className="text-gray-500 text-sm">Loading your bookings...</p>
+                </div>
+              ) : bookings.length === 0 ? (
+                <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-xl">
                   <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">No services booked yet</p>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-1">No bookings yet</h3>
+                  <p className="text-gray-500 text-sm mb-6">
+                    Book your first companion session with secure Razorpay payment.
+                  </p>
+                  <button
+                    onClick={() => navigate('/find-companions')}
+                    className="bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:shadow-md transition"
+                  >
+                    Browse Companions
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {serviceHistory.map((service) => (
+                  {bookings.map((service) => (
                     <div
                       key={service.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                      className="p-5 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all bg-linear-to-r from-white to-purple-50/20"
                     >
-                      <div className="flex-1 mb-4 sm:mb-0">
-                        <div className="flex items-center gap-4 mb-2">
-                          <h3 className="font-semibold text-[#2d1b4e]">{service.companionName}</h3>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              service.status === 'Completed'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-blue-100 text-blue-700'
-                            }`}
-                          >
-                            {service.status}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">{service.companionRole}</p>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Calendar size={14} />
-                            {new Date(service.serviceDate).toLocaleDateString()}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock size={14} />
-                            {service.duration}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-end gap-2 sm:gap-4 min-w-max">
-                        <p className="text-lg font-bold text-[#2d1b4e]">{service.amount}</p>
-                        {service.rating ? (
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                size={14}
-                                className={
-                                  i < Math.floor(service.rating)
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'text-gray-300'
-                                }
-                              />
-                            ))}
-                            <span className="text-sm text-gray-600 ml-1">{service.rating}</span>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                            <h3 className="font-bold text-[#2d1b4e] text-lg">
+                              {service.companionName}
+                            </h3>
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                                service.paymentStatus === 'paid'
+                                  ? 'bg-green-100 text-green-700 border border-green-200'
+                                  : 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                              }`}
+                            >
+                              {service.paymentStatus === 'paid' ? '✓ Paid' : 'Pending Payment'}
+                            </span>
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200">
+                              {service.bookingStatus === 'confirmed' ? 'Confirmed' : service.bookingStatus}
+                            </span>
                           </div>
-                        ) : (
-                          <button className="text-sm text-[#e879a0] font-semibold hover:text-[#b355e0]">
-                            Rate Service
-                          </button>
-                        )}
+
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-2">
+                            <span className="flex items-center gap-1.5 font-medium">
+                              <Calendar size={15} className="text-purple-500" />
+                              {new Date(service.date).toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </span>
+                            <span className="flex items-center gap-1.5 font-medium">
+                              <Clock size={15} className="text-purple-500" />
+                              {service.time} ({service.duration} hour{service.duration > 1 ? 's' : ''})
+                            </span>
+                          </div>
+
+                          {service.paymentId && (
+                            <div className="flex items-center gap-1 text-xs text-gray-500 font-mono">
+                              <ShieldCheck size={14} className="text-emerald-500" />
+                              <span>Txn: {service.paymentId}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 pt-3 sm:pt-0">
+                          <p className="text-2xl font-bold bg-gradient-to-r from-[#e879a0] to-[#b355e0] bg-clip-text text-transparent">
+                            ₹{service.totalPrice || service.totalAmount}
+                          </p>
+                          <span className="text-xs text-gray-500">Razorpay Verified</span>
+                        </div>
                       </div>
                     </div>
                   ))}
