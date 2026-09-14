@@ -53,14 +53,22 @@ function Nav({ onBecome, scrollToSection, onUserLogout }) {
     setMobileOpen(false);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setProfileOpen(false);
-    navigate('/');
-    if (onUserLogout) {
-      onUserLogout();
+  const handleLogout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_SERVER_URL}/user/logout`, {
+        method: 'POST',
+        credentials: 'include', // sends the httpOnly cookie so the server can clear it
+      });
+    } catch (err) {
+      console.error('Logout request failed:', err);
+    } finally {
+      localStorage.removeItem('user');
+      setUser(null);
+      setProfileOpen(false);
+      navigate('/');
+      if (onUserLogout) {
+        onUserLogout();
+      }
     }
   };
 

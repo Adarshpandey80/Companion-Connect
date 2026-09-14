@@ -5,6 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const userRoutes = require('./Routes/userRouters');
 const bookingRoutes = require('./Routes/bookingRoutes');
@@ -12,6 +14,12 @@ const bookingRoutes = require('./Routes/bookingRoutes');
 const app = express();
 const port = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === 'production';
+
+// Startup guard — refuse to run without a proper JWT secret
+if (!process.env.JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is not set. Refusing to start.');
+  process.exit(1);
+}
 
 // Security Headers
 app.use(helmet());
@@ -39,6 +47,12 @@ app.use(
 // Body Parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Cookie Parsing (for httpOnly JWT cookies)
+app.use(cookieParser());
+
+// NoSQL Injection Prevention
+app.use(mongoSanitize());
 
 // Rate Limiting for Security
 const generalLimiter = rateLimit({

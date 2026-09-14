@@ -2,10 +2,18 @@ const userModel = require('../Models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+};
+
 const generateToken = (userId, email) => {
+  // JWT_SECRET is guaranteed to exist — app.js blocks startup without it
   return jwt.sign(
     { userId, email },
-    process.env.JWT_SECRET || 'your-secret-key',
+    process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 };
@@ -17,6 +25,11 @@ const signup = async (req, res) => {
     // Validate required fields
     if (!fullName || !email || !password || !phone) {
       return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Enforce password minimum length before hitting the DB
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters' });
     }
 
     // Check if user already exists
@@ -39,12 +52,12 @@ const signup = async (req, res) => {
 
     await newUser.save();
 
-    // Generate token
+    // Generate token and set as httpOnly cookie
     const token = generateToken(newUser._id, newUser.email);
+    res.cookie('token', token, COOKIE_OPTIONS);
 
     res.status(201).json({
       message: 'User registered successfully',
-      token,
       user: {
         id: newUser._id,
         fullName: newUser.fullName,
@@ -83,12 +96,12 @@ const login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    // Generate token
+    // Generate token and set as httpOnly cookie
     const token = generateToken(user._id, user.email);
+    res.cookie('token', token, COOKIE_OPTIONS);
 
     res.status(200).json({
       message: 'Login successful',
-      token,
       user: {
         id: user._id,
         fullName: user.fullName,
@@ -102,13 +115,22 @@ const login = async (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+  res.status(200).json({ success: true, message: 'Logged out successfully' });
+};
+
 
 const companionModel = require('../Models/Companion');
 
 const becomeCompanion = async (req, res) => {
   try {
     const { fullName, email, phone, location, age, bio, experience, services, availability, hourlyRate, agreeTerms } = req.body;
-    const userId = req.user?.id; // From auth middleware (we'll need to add this)
+    const userId = req.user.id; // Guaranteed by authenticateToken middleware
 
     // Validate required fields
     if (!fullName || !email || !phone || !location || !age || !bio || !experience || !services || !availability || !hourlyRate || !agreeTerms) {
@@ -130,10 +152,10 @@ const becomeCompanion = async (req, res) => {
       return res.status(400).json({ message: 'Hourly rate must be greater than 0' });
     }
 
-    // Check if companion profile already exists for this user
-    const existingCompanion = await companionModel.findOne({ email });
+    // Check if this user already has a companion profile (keyed by userId, not email)
+    const existingCompanion = await companionModel.findOne({ userId });
     if (existingCompanion) {
-      return res.status(400).json({ message: 'A companion profile with this email already exists' });
+      return res.status(400).json({ message: 'You already have a companion profile' });
     }
 
     // Check if bio is at least 20 characters
@@ -143,7 +165,7 @@ const becomeCompanion = async (req, res) => {
 
     // Create new companion profile
     const newCompanion = new companionModel({
-      userId: userId || null,
+      userId,
       fullName,
       email,
       phone,
@@ -177,12 +199,13 @@ const becomeCompanion = async (req, res) => {
       const messages = Object.values(err.errors).map(e => e.message);
       return res.status(400).json({ message: messages.join(', ') });
     }
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 module.exports = {
     signup,
     login,
+    logout,
     becomeCompanion
 }

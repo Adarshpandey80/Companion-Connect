@@ -1,6 +1,7 @@
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const Booking = require('../Models/Booking');
+const Companion = require('../Models/Companion');
 
 const getRazorpayInstance = () => {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -24,24 +25,21 @@ const createOrder = async (req, res) => {
     const userId = req.user.userId;
     const {
       companionId,
-      companionName,
       date,
       time,
       duration,
-      hourlyRate,
       notes,
     } = req.body;
 
     // Validate inputs
-    if (!companionId || !companionName || !date || !time || !duration || !hourlyRate) {
+    if (!companionId || !date || !time || !duration) {
       return res.status(400).json({
         success: false,
-        message: 'All booking fields (companionId, companionName, date, time, duration, hourlyRate) are required.',
+        message: 'All booking fields (companionId, date, time, duration) are required.',
       });
     }
 
     const parsedDuration = parseInt(duration, 10);
-    const parsedRate = parseFloat(hourlyRate);
 
     if (isNaN(parsedDuration) || parsedDuration < 1 || parsedDuration > 24) {
       return res.status(400).json({
@@ -50,12 +48,22 @@ const createOrder = async (req, res) => {
       });
     }
 
-    if (isNaN(parsedRate) || parsedRate <= 0) {
-      return res.status(400).json({
+    // Validate companion exists and is active & verified — fetch authoritative hourlyRate from DB
+    const companion = await Companion.findOne({
+      _id: companionId,
+      isActive: true,
+      'verification.status': 'verified',
+    }).select('fullName hourlyRate');
+
+    if (!companion) {
+      return res.status(404).json({
         success: false,
-        message: 'Hourly rate must be a positive number.',
+        message: 'Companion not found, inactive, or not yet verified.',
       });
     }
+
+    const companionName = companion.fullName;
+    const parsedRate = companion.hourlyRate; // Authoritative — never trust the client
 
     const totalAmount = parsedDuration * parsedRate;
     const amountInPaise = Math.round(totalAmount * 100);
@@ -157,6 +165,14 @@ const verifyPayment = async (req, res) => {
         success: true,
         message: 'Payment has already been verified.',
         booking,
+      });
+    }
+
+    // Reject payment verification on bookings that are cancelled or in an unexpected state
+    if (booking.bookingStatus === 'cancelled') {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot verify payment for a cancelled booking.',
       });
     }
 

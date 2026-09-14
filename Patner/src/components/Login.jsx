@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Mail, Lock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
-function Login({ onClose, onSwitchToSignup, onSuccess }) {
+function Login({ onClose, onSwitchToSignup, onSuccess, onForgotPassword }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,13 +15,13 @@ function Login({ onClose, onSwitchToSignup, onSuccess }) {
 
     try {
       const apiUrl = `${import.meta.env.VITE_SERVER_URL}/user/login`;
-      const response = await axios.post(apiUrl, { email, password });
-      
-      if (response.data && response.data.token) {
-        // Save token and user data to localStorage
-        localStorage.setItem('token', response.data.token);
+      // withCredentials ensures the httpOnly cookie set by the server is saved
+      const response = await axios.post(apiUrl, { email, password }, { withCredentials: true });
+
+      if (response.data?.user) {
+        // Token is stored securely in an httpOnly cookie — only save non-sensitive user info
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        
+
         onSuccess(`Welcome back, ${response.data.user.fullName}!`);
         onClose();
       } else {
@@ -43,8 +43,8 @@ function Login({ onClose, onSwitchToSignup, onSuccess }) {
             <h2 className="text-2xl font-bold text-[#2d1b4e]">Welcome Back</h2>
             <p className="text-sm text-gray-500 mt-1">Login to your account</p>
           </div>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <X size={24} className="text-gray-600" />
@@ -87,6 +87,7 @@ function Login({ onClose, onSwitchToSignup, onSuccess }) {
               </label>
               <button
                 type="button"
+                onClick={onForgotPassword}
                 className="text-xs text-[#e879a0] hover:text-[#d5a8f0] transition-colors"
               >
                 Forgot?
@@ -100,6 +101,7 @@ function Login({ onClose, onSwitchToSignup, onSuccess }) {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                minLength={8}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e879a0] focus:border-transparent transition-all"
               />
             </div>

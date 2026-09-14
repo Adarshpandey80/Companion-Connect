@@ -1,8 +1,12 @@
 const jwt = require('jsonwebtoken');
 
 const authenticateToken = (req, res, next) => {
+  // Read token from Authorization header first, then fall back to httpOnly cookie
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+  const token =
+    (authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null) ||
+    req.cookies?.token ||
+    null;
 
   if (!token) {
     return res.status(401).json({
@@ -13,23 +17,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
-    let decoded;
-    const primarySecret = process.env.JWT_SECRET || 'your-secret-key';
-
-    try {
-      decoded = jwt.verify(token, primarySecret);
-    } catch (primaryErr) {
-      // Fallback verification with default secret if token was issued prior to dotenv config loading
-      if (primarySecret !== 'your-secret-key') {
-        try {
-          decoded = jwt.verify(token, 'your-secret-key');
-        } catch {
-          throw primaryErr;
-        }
-      } else {
-        throw primaryErr;
-      }
-    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = {
       ...decoded,
@@ -38,12 +26,11 @@ const authenticateToken = (req, res, next) => {
     };
     next();
   } catch (err) {
-    console.error('Authentication verification failed:', err.name, err.message);
+    console.error('Authentication verification failed:', err.name);
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired token. Please log in again.',
       isAuthError: true,
-      errorName: err.name,
     });
   }
 };

@@ -127,14 +127,6 @@ const companionSchema = new mongoose.Schema(
     profileImage: {
       type: String,
       default: null
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now
     }
   },
   { timestamps: true }
