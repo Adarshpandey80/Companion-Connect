@@ -270,10 +270,20 @@ const becomeCompanion = async (req, res) => {
   } catch (error) {
     console.error('Become companion error:', error);
 
-    // Cloudinary error
+    // Cloudinary upload permissions or account configuration error.
     if (error.http_code) {
+      console.error('Cloudinary error:', {
+        http_code: error.http_code,
+        name: error.name,
+        message: error.message,
+      });
+
       return res.status(502).json({
-        message: 'Image upload failed',
+        message: error.http_code === 403
+          ? 'Cloudinary rejected this upload. Create an unsigned upload preset, add it as CLOUDINARY_UPLOAD_PRESET in Server/.env, and restart the server.'
+          : 'Cloudinary could not upload the profile photos. Please try again.',
+        providerStatus: error.http_code,
+        uploadMode: error.uploadMode,
       });
     }
 
