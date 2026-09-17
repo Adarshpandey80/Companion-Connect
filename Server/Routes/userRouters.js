@@ -11,6 +11,9 @@ router.post('/login', userController.login);
 
 router.post('/logout', userController.logout);
 
+router.get('/companions', userController.getCompanions);
+router.get('/companions/:id', userController.getCompanion);
+
 router.post(
   '/become-companion',
   authenticateToken,

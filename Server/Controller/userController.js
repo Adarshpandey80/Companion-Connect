@@ -128,6 +128,56 @@ const logout = (req, res) => {
 const companionModel = require('../Models/Companion');
 const uploadImage = require('../utils/uploadImage');
 
+const formatCompanion = (companion) => ({
+  id: companion._id,
+  name: companion.fullName,
+  age: companion.age,
+  location: companion.location,
+  bio: companion.bio,
+  services: companion.services,
+  tags: companion.services,
+  availability: companion.availability,
+  hourlyRate: companion.hourlyRate,
+  price: companion.hourlyRate,
+  rating: companion.rating?.average || 0,
+  reviews: companion.rating?.totalReviews || 0,
+  images: companion.images || (companion.profileImage ? [companion.profileImage] : []),
+  profileImage: companion.profileImage,
+  verification: companion.verification?.status || 'pending',
+  isActive: companion.isActive,
+});
+
+const getCompanions = async (req, res) => {
+  try {
+    const companions = await companionModel
+      .find({ isActive: true })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ companions: companions.map(formatCompanion) });
+  } catch (error) {
+    console.error('Get companions error:', error);
+    res.status(500).json({ message: 'Unable to load companions' });
+  }
+};
+
+const getCompanion = async (req, res) => {
+  try {
+    const companion = await companionModel.findOne({
+      _id: req.params.id,
+      isActive: true,
+    });
+
+    if (!companion) {
+      return res.status(404).json({ message: 'Companion not found' });
+    }
+
+    res.status(200).json({ companion: formatCompanion(companion) });
+  } catch (error) {
+    console.error('Get companion error:', error);
+    res.status(404).json({ message: 'Companion not found' });
+  }
+};
+
 const becomeCompanion = async (req, res) => {
   try {
     const {
@@ -308,5 +358,7 @@ module.exports = {
     signup,
     login,
     logout,
+  getCompanions,
+  getCompanion,
     becomeCompanion
 }

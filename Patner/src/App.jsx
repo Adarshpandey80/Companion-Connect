@@ -1,6 +1,7 @@
 // App.js
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import Nav from './components/Nav';
 import ProtectedRoute from './components/ProtectedRoute';
 import Hero from './components/Hero';
@@ -46,6 +47,7 @@ function AppContent() {
   const [showSignup, setShowSignup] = useState(false);
   const [userLogoutTrigger, setUserLogoutTrigger] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [companions, setCompanions] = useState(COMPANIONS);
   const toastTimer = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,6 +57,20 @@ function AppContent() {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
   }, [userLogoutTrigger]);
+
+  useEffect(() => {
+    const apiUrl = `${import.meta.env.VITE_SERVER_URL || 'http://localhost:8080'}/user/companions`;
+
+    axios.get(apiUrl)
+      .then((response) => {
+        if (Array.isArray(response.data?.companions)) {
+          setCompanions(response.data.companions);
+        }
+      })
+      .catch((error) => {
+        console.error('Unable to load companions from server:', error);
+      });
+  }, []);
 
   const showToast = useCallback((msg) => {
     setToast({ show: true, msg });
@@ -72,7 +88,6 @@ function AppContent() {
       setShowLogin(true);
       return;
     }
-    setSelectedCompanion(c);
     navigate(`/companion/${c.id}`);
   };
   
@@ -166,7 +181,7 @@ function AppContent() {
             <div className="h-16" />
             <HowItWorks />
             <div className="h-16" />
-            <CompanionSection onOpen={openProfile} onHire={handleHire} />
+            <CompanionSection companions={companions} onOpen={openProfile} onHire={handleHire} />
             <div className="h-16" />
             <FilterSection onShowToast={showToast} />
             <div className="h-16" />
@@ -186,12 +201,12 @@ function AppContent() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/find-companions" element={
           <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
-            <FindCompanions companions={COMPANIONS} onOpen={openProfile} onHire={handleHire} />
+            <FindCompanions companions={companions} onOpen={openProfile} onHire={handleHire} />
           </ProtectedRoute>
         } />
         <Route path="/companion/:id" element={
           <ProtectedRoute onShowLogin={() => setShowLogin(true)}>
-            <CompanionProfile companions={COMPANIONS} onBook={handleBook} onChat={handleChat} />
+            <CompanionProfile companions={companions} onBook={handleBook} onChat={handleChat} />
           </ProtectedRoute>
         } />
         <Route path="/become-companion" element={
@@ -207,7 +222,7 @@ function AppContent() {
       </Routes>
       <Footer onBecome={handleGetStarted} />
 
-      {selectedCompanion && (
+      {selectedCompanion && location.pathname !== `/companion/${selectedCompanion.id}` && (
         <ProfileModal companion={selectedCompanion} onClose={closeProfile} onBook={handleBook} onChat={handleChat} onHire={handleHire} />
       )}
       {bookingCompanion && (

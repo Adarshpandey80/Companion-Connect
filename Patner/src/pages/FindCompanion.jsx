@@ -2,15 +2,14 @@ import React, { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Clock, MessageCircle, Heart, ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
-import { COMPANIONS } from '../data/companions'
 import { REVIEWS } from '../data/reviews'
 import BookingModal from '../components/BookingModal'
 import BookingConfirmation from '../components/BookingConfirmation'
 
-export default function CompanionProfile() {
+export default function CompanionProfile({ companions }) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const companion = COMPANIONS.find(c => c.id === parseInt(id))
+  const companion = companions.find(c => String(c.id) === id)
   const [isWishlisted, setIsWishlisted] = React.useState(false)
   const [showBookingModal, setShowBookingModal] = React.useState(false)
   const [confirmedBooking, setConfirmedBooking] = React.useState(null)
@@ -176,17 +175,18 @@ export default function CompanionProfile() {
                 onClick={() => setShowBookingModal(true)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition"
+                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
               >
-                Book Now
+                <Calendar size={19} />
+                Book {companion.name.split(' ')[0]}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-3 rounded-lg font-semibold text-secondary-600 glass hover:bg-white/50 smooth-transition flex items-center justify-center space-x-2"
+                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
               >
-                <MessageCircle size={20} />
-                <span>Send Message</span>
+                <MessageCircle size={20}  className="text-blue-500" />
+                <span className=" font-semibold text-blue-500">Send Message</span>
               </motion.button>
             </div>
           </motion.div>

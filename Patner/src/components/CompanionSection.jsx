@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Reveal from './Reveal';
 import SectionTag from './SectionTag';
-import { COMPANIONS } from '../data/companions';
 
 function CompanionCard({ c, onOpen, onHire }) {
   const [hov, setHov] = useState(false);
@@ -24,12 +23,13 @@ function CompanionCard({ c, onOpen, onHire }) {
       }}
     >
       <div className="relative h-[200px] bg-gradient-to-r from-[#f3e5fb] to-[#fce4ec] flex items-center justify-center overflow-hidden">
-        <span 
-          className="text-5xl transition-transform duration-300"
-          style={{ transform: hov ? 'scale(1.08)' : 'scale(1)' }}
-        >
-          {c.emoji}
-        </span>
+        {c.images?.[0] ? (
+          <img src={c.images[0]} alt={`${c.name} profile`} className="h-full w-full object-cover transition-transform duration-300" style={{ transform: hov ? 'scale(1.08)' : 'scale(1)' }} />
+        ) : (
+          <span className="text-5xl transition-transform duration-300" style={{ transform: hov ? 'scale(1.08)' : 'scale(1)' }}>
+            {c.emoji || '✨'}
+          </span>
+        )}
         <div 
           className="absolute inset-0 bg-gradient-to-t from-[rgba(45,27,78,0.55)] via-transparent to-transparent transition-opacity duration-300"
           style={{ opacity: hov ? 1 : 0 }}
@@ -65,10 +65,10 @@ function CompanionCard({ c, onOpen, onHire }) {
   );
 }
 
-function CompanionsSection({ onOpen, onHire }) {
+function CompanionsSection({ companions = [], onOpen, onHire }) {
   const [filter, setFilter] = useState({ gender: "All", city: "Any", interest: "", rating: 0, price: 3000 });
   
-  const filtered = COMPANIONS.filter(c => {
+  const filtered = companions.filter(c => {
     if (filter.gender !== "All" && c.gender !== filter.gender) return false;
     if (filter.city !== "Any" && c.location !== filter.city) return false;
     if (filter.interest && !c.tags.some(t => t.toLowerCase().includes(filter.interest.toLowerCase()))) return false;
