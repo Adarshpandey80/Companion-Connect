@@ -6,7 +6,6 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const mongoSanitize = require('express-mongo-sanitize');
 
 const userRoutes = require('./Routes/userRouters');
 const bookingRoutes = require('./Routes/bookingRoutes');
@@ -51,8 +50,29 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Cookie Parsing (for httpOnly JWT cookies)
 app.use(cookieParser());
 
-// NoSQL Injection Prevention
-app.use(mongoSanitize());
+// NoSQL Injection Prevention. Express 5 exposes req.query as a read-only
+// property, so sanitize the existing objects instead of replacing them.
+const sanitizeObject = (value) => {
+  if (!value || typeof value !== 'object') return;
+
+  Object.keys(value).forEach((key) => {
+    if (key.startsWith('$') || key.includes('.')) {
+      delete value[key];
+      return;
+    }
+
+    if (typeof value[key] === 'object') {
+      sanitizeObject(value[key]);
+    }
+  });
+};
+
+app.use((req, res, next) => {
+  sanitizeObject(req.body);
+  sanitizeObject(req.params);
+  sanitizeObject(req.query);
+  next();
+});
 
 // Rate Limiting for Security
 const generalLimiter = rateLimit({
@@ -103,6 +123,12 @@ app.use((req, res) => {
 // Centralized Error Handler
 app.use((err, req, res, next) => {
   console.error('Unhandled Error:', err.message);
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ success: false, message: 'Each profile photo must be 8 MB or smaller.' });
+  }
+  if (err.message === 'Only image files are allowed') {
+    return res.status(400).json({ success: false, message: err.message });
+  }
   res.status(err.status || 500).json({
     success: false,
     message: isProduction ? 'An unexpected server error occurred.' : err.message,

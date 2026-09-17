@@ -127,6 +127,20 @@ const companionSchema = new mongoose.Schema(
     profileImage: {
       type: String,
       default: null
+    },
+    images: {
+      type: [String],
+      required: [true, 'At least two profile photos are required'],
+      validate: [
+        {
+          validator: (v) => Array.isArray(v) && v.length >= 2,
+          message: 'At least two profile photos are required'
+        },
+        {
+          validator: (v) => Array.isArray(v) && v.length <= 4,
+          message: 'You can upload a maximum of four profile photos'
+        }
+      ]
     }
   },
   { timestamps: true }

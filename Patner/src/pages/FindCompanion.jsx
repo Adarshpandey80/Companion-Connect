@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Star, MapPin, Clock, MessageCircle, Heart, Share2, ChevronLeft, Calendar, Users } from 'lucide-react'
+import { Star, MapPin, Clock, MessageCircle, Heart, ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 import { COMPANIONS } from '../data/companions'
 import { REVIEWS } from '../data/reviews'
 import BookingModal from '../components/BookingModal'
@@ -14,10 +14,26 @@ export default function CompanionProfile() {
   const [isWishlisted, setIsWishlisted] = React.useState(false)
   const [showBookingModal, setShowBookingModal] = React.useState(false)
   const [confirmedBooking, setConfirmedBooking] = React.useState(null)
+  const [activeImage, setActiveImage] = React.useState(0)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    setActiveImage(0)
   }, [])
+
+  const images = companion?.images?.length
+    ? companion.images
+    : companion?.image
+      ? [companion.image]
+      : []
+
+  const showPreviousImage = () => {
+    setActiveImage((current) => (current - 1 + Math.max(images.length, 1)) % Math.max(images.length, 1))
+  }
+
+  const showNextImage = () => {
+    setActiveImage((current) => (current + 1) % Math.max(images.length, 1))
+  }
 
   if (!companion) {
     return (
@@ -48,18 +64,44 @@ export default function CompanionProfile() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Image */}
+          {/* Profile Gallery */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="glass-lg rounded-3xl overflow-hidden mb-6 h-96 lg:h-full min-h-96">
-              <img
-                src={companion.image}
-                alt={companion.name}
-                className="w-full h-full object-cover"
-              />
+            <div className="space-y-3">
+              <div className="relative h-96 min-h-96 overflow-hidden rounded-3xl bg-gradient-to-br from-[#f3e5fb] via-[#fff4f7] to-[#f9dce8] shadow-xl lg:h-[34rem]">
+                {images.length > 0 ? (
+                  <img src={images[activeImage]} alt={`${companion.name} profile photo ${activeImage + 1}`} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-8xl">{companion.emoji}</div>
+                )}
+                {images.length > 1 && (
+                  <>
+                    <button type="button" onClick={showPreviousImage} aria-label="Previous profile photo" className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 text-[#2d1b4e] shadow-lg transition hover:bg-white">
+                      <ChevronLeft size={20} />
+                    </button>
+                    <button type="button" onClick={showNextImage} aria-label="Next profile photo" className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 text-[#2d1b4e] shadow-lg transition hover:bg-white">
+                      <ChevronRight size={20} />
+                    </button>
+                    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-black/35 px-3 py-2 backdrop-blur-sm">
+                      {images.map((image, index) => (
+                        <button key={image} type="button" onClick={() => setActiveImage(index)} aria-label={`Show profile photo ${index + 1}`} className={`h-2 w-2 rounded-full transition ${index === activeImage ? 'bg-white' : 'bg-white/50'}`} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="grid grid-cols-4 gap-3">
+                  {images.map((image, index) => (
+                    <button key={image} type="button" onClick={() => setActiveImage(index)} className={`aspect-[4/3] overflow-hidden rounded-xl border-2 transition ${index === activeImage ? 'border-[#e879a0]' : 'border-transparent opacity-70 hover:opacity-100'}`}>
+                      <img src={image} alt="" className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -98,7 +140,7 @@ export default function CompanionProfile() {
                 </div>
                 <div className="flex items-center space-x-2 text-green-600">
                   <Clock size={18} />
-                  <span>{companion.availability}</span>
+                  <span>{companion.availability || 'Flexible schedule'}</span>
                 </div>
               </div>
 
@@ -163,7 +205,7 @@ export default function CompanionProfile() {
             <p className="text-gray-700 leading-relaxed mb-6">{companion.bio}</p>
             <div className="bg-accent-50 border border-accent-200 rounded-lg p-4">
               <p className="text-sm text-accent-900">
-                ✓ {companion.badge} profile - All verification checks passed
+                ✓ Verified profile - All verification checks passed
               </p>
             </div>
           </div>

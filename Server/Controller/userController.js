@@ -126,80 +126,171 @@ const logout = (req, res) => {
 
 
 const companionModel = require('../Models/Companion');
+const uploadImage = require('../utils/uploadImage');
 
 const becomeCompanion = async (req, res) => {
   try {
-    const { fullName, email, phone, location, age, bio, experience, services, availability, hourlyRate, agreeTerms } = req.body;
-    const userId = req.user.id; // Guaranteed by authenticateToken middleware
+    const {
+      fullName,
+      email,
+      phone,
+      location,
+      age,
+      bio,
+      experience,
+      availability,
+      hourlyRate,
+      agreeTerms,
+    } = req.body;
 
-    // Validate required fields
-    if (!fullName || !email || !phone || !location || !age || !bio || !experience || !services || !availability || !hourlyRate || !agreeTerms) {
-      return res.status(400).json({ message: 'All fields are required' });
+    let { services } = req.body;
+
+    // Convert services JSON string to array
+    if (typeof services === 'string') {
+      try {
+        services = JSON.parse(services);
+      } catch {
+        return res.status(400).json({
+          message: 'Services must be a valid list',
+        });
+      }
     }
 
-    // Validate services array
+    const images = req.files || [];
+    const userId = req.user.id;
+
+    // Required fields
+    if (
+      !fullName ||
+      !email ||
+      !phone ||
+      !location ||
+      !age ||
+      !bio ||
+      !experience ||
+      !availability ||
+      !hourlyRate ||
+      !agreeTerms
+    ) {
+      return res.status(400).json({
+        message: 'All fields are required',
+      });
+    }
+
+    // Images
+    if (images.length < 2 || images.length > 4) {
+      return res.status(400).json({
+        message: 'Please upload between 2 and 4 profile photos',
+      });
+    }
+
+    // Services
     if (!Array.isArray(services) || services.length === 0) {
-      return res.status(400).json({ message: 'At least one service must be selected' });
+      return res.status(400).json({
+        message: 'At least one service must be selected',
+      });
     }
 
-    // Validate age
-    if (age < 18) {
-      return res.status(400).json({ message: 'Must be at least 18 years old' });
+    // Age
+    const userAge = Number(age);
+
+    if (userAge < 18) {
+      return res.status(400).json({
+        message: 'Must be at least 18 years old',
+      });
     }
 
-    // Validate hourly rate
-    if (hourlyRate <= 0) {
-      return res.status(400).json({ message: 'Hourly rate must be greater than 0' });
+    // Hourly rate
+    const rate = Number(hourlyRate);
+
+    if (rate <= 0) {
+      return res.status(400).json({
+        message: 'Hourly rate must be greater than 0',
+      });
     }
 
-    // Check if this user already has a companion profile (keyed by userId, not email)
-    const existingCompanion = await companionModel.findOne({ userId });
-    if (existingCompanion) {
-      return res.status(400).json({ message: 'You already have a companion profile' });
-    }
-
-    // Check if bio is at least 20 characters
+    // Bio
     if (bio.length < 20) {
-      return res.status(400).json({ message: 'Bio must be at least 20 characters' });
+      return res.status(400).json({
+        message: 'Bio must be at least 20 characters',
+      });
     }
 
-    // Create new companion profile
-    const newCompanion = new companionModel({
+    // Check existing profile
+    const existingCompanion = await companionModel.findOne({
+      userId,
+    });
+
+    if (existingCompanion) {
+      return res.status(400).json({
+        message: 'You already have a companion profile',
+      });
+    }
+
+    // Upload images to Cloudinary
+    const imageUrls = await Promise.all(
+      images.map((image) => uploadImage(image.buffer))
+    );
+
+    // Create companion
+    const newCompanion = await companionModel.create({
       userId,
       fullName,
       email,
       phone,
       location,
-      age: parseInt(age),
+      age: userAge,
       bio,
       experience,
       services,
       availability,
-      hourlyRate: parseFloat(hourlyRate),
-      agreeTerms,
+      hourlyRate: rate,
+      agreeTerms: true,
+
+      images: imageUrls,
+      profileImage: imageUrls[0],
+
       verification: {
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     });
 
-    await newCompanion.save();
+    return res.status(201).json({
+      message:
+        'Application submitted successfully! We will review your profile within 24-48 hours.',
 
-    res.status(201).json({
-      message: 'Application submitted successfully! We will review your profile within 24-48 hours.',
       companion: {
         id: newCompanion._id,
         fullName: newCompanion.fullName,
         email: newCompanion.email,
-        verification: newCompanion.verification
-      }
+        images: newCompanion.images,
+        verification: newCompanion.verification,
+      },
     });
-  } catch (err) {
-    console.error(err);
-    if (err.name === 'ValidationError') {
-      const messages = Object.values(err.errors).map(e => e.message);
-      return res.status(400).json({ message: messages.join(', ') });
+  } catch (error) {
+    console.error('Become companion error:', error);
+
+    // Cloudinary error
+    if (error.http_code) {
+      return res.status(502).json({
+        message: 'Image upload failed',
+      });
     }
-    res.status(500).json({ message: 'Server error' });
+
+    // Mongoose validation error
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors)
+        .map((err) => err.message)
+        .join(', ');
+
+      return res.status(400).json({
+        message: messages,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
   }
 };
 

@@ -67,11 +67,10 @@ function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
     setLoading(true);
     try {
       const apiUrl = `${import.meta.env.VITE_SERVER_URL}/user/signup`;
-      const response = await axios.post(apiUrl, formData);
+      const response = await axios.post(apiUrl, formData, { withCredentials: true });
       
-      if (response.data && response.data.token) {
-        // Save token and user data to localStorage
-        localStorage.setItem('token', response.data.token);
+      if (response.data && response.data.user) {
+        // The server stores the JWT in an httpOnly cookie.
         localStorage.setItem('user', JSON.stringify(response.data.user));
         
         onSuccess(`Welcome ${formData.fullName.split(' ')[0]}!`);
