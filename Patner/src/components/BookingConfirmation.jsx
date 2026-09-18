@@ -27,9 +27,9 @@ function BookingConfirmation({ booking, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden animate-modalIn">
         {/* Success Header */}
-        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-7 text-center relative text-white">
+        <div className="bg-linear-to-r from-emerald-500 to-teal-600 p-7 text-center relative text-white">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/20 transition"
@@ -94,10 +94,10 @@ function BookingConfirmation({ booking, onClose }) {
           </div>
 
           {/* Price Summary */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200 flex items-center justify-between">
+          <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200 flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-600 font-medium">Amount Paid</p>
-              <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <p className="text-2xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 ₹{booking.totalPrice || booking.totalAmount}
               </p>
             </div>
@@ -118,7 +118,7 @@ function BookingConfirmation({ booking, onClose }) {
           </button>
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-md hover:shadow-lg text-sm"
+            className="flex-1 px-4 py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-md hover:shadow-lg text-sm"
           >
             Done
           </button>

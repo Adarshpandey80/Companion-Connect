@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children, onShowLogin }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-50 to-pink-50">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#e879a0] border-t-[#b355e0] rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-[#2d1b4e] font-medium">Loading...</p>

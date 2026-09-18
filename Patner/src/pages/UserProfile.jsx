@@ -75,7 +75,7 @@ function UserProfile() {
           <p className="text-gray-600 mb-6">Please login to view your profile and bookings.</p>
           <button
             onClick={() => navigate('/')}
-            className="w-full bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+            className="w-full bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
           >
             Go Home
           </button>
@@ -111,7 +111,7 @@ function UserProfile() {
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
               {/* Profile Avatar */}
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-linear-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-4xl font-bold text-white shadow-lg">
                   {user.fullName
                     ?.split(' ')
                     .map((n) => n[0])
@@ -163,7 +163,7 @@ function UserProfile() {
               {/* Browse Companions Button */}
               <button
                 onClick={() => navigate('/find-companions')}
-                className="w-full mt-6 flex items-center justify-center gap-2 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all"
+                className="w-full mt-6 flex items-center justify-center gap-2 bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all"
               >
                 <ShoppingBag size={16} />
                 Find Companions
@@ -260,7 +260,7 @@ function UserProfile() {
                   </p>
                   <button
                     onClick={() => navigate('/find-companions')}
-                    className="bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:shadow-md transition"
+                    className="bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:shadow-md transition"
                   >
                     Browse Companions
                   </button>
@@ -317,7 +317,7 @@ function UserProfile() {
                         </div>
 
                         <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 pt-3 sm:pt-0">
-                          <p className="text-2xl font-bold bg-gradient-to-r from-[#e879a0] to-[#b355e0] bg-clip-text text-transparent">
+                          <p className="text-2xl font-bold bg-linear-to-r from-[#e879a0] to-[#b355e0] bg-clip-text text-transparent">
                             ₹{service.totalPrice || service.totalAmount}
                           </p>
                           <span className="text-xs text-gray-500">Razorpay Verified</span>

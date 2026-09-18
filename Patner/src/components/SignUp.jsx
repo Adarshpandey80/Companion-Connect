@@ -105,7 +105,7 @@ function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
         {/* Progress Bar */}
         <div className="h-1 bg-gray-200">
           <div 
-            className="h-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] transition-all duration-300"
+            className="h-full bg-linear-to-r from-[#e879a0] to-[#d5a8f0] transition-all duration-300"
             style={{ width: `${(step / 2) * 100}%` }}
           ></div>
         </div>
@@ -245,7 +245,7 @@ function SignUp({ onClose, onSwitchToLogin, onSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Processing...' : step === 1 ? 'Next' : 'Create Account'}
             </button>

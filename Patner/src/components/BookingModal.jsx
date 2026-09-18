@@ -183,7 +183,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-xs">
         <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="flex justify-between items-center p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0">
+          <div className="flex justify-between items-center p-6 border-b bg-linear-to-r from-purple-50 to-pink-50 flex-shrink-0">
             <div>
               <h2 className="text-2xl font-bold text-gray-800">Book Your Session</h2>
               <p className="text-xs text-purple-600 font-medium flex items-center gap-1 mt-0.5">
@@ -201,10 +201,10 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
 
           {/* Companion Info Card */}
           <div className="px-6 pt-6 flex-shrink-0">
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
+            <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
               <div className="flex gap-4">
                 {/* Avatar */}
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex items-center justify-center text-3xl flex-shrink-0 shadow-inner">
+                <div className="w-16 h-16 bg-linear-to-br from-purple-200 to-pink-200 rounded-lg flex items-center justify-center text-3xl flex-shrink-0 shadow-inner">
                   {companion.emoji || '👤'}
                 </div>
 
@@ -243,7 +243,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
 
           {/* Error Notification with Re-login Action */}
           {error && (
-            <div className="mx-6 mt-4 p-3.5 bg-red-50 border border-red-200 rounded-xl flex flex-col gap-2.5 text-sm text-red-600 animate-in fade-in">
+            <div className="mx-6 mt-4 p-3.5 bg-red-50 border border-red-200 rounded-xl flex flex-col gap-2.5 text-sm text-red-600 animate-fadeDown">
               <div className="flex items-start gap-2">
                 <AlertCircle size={16} className="shrink-0 mt-0.5 text-red-600" />
                 <span className="flex-1 font-medium">{error}</span>
@@ -336,7 +336,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
             </div>
 
             {/* Price Breakdown */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 mt-6 space-y-3 border border-purple-100">
+            <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-5 mt-6 space-y-3 border border-purple-100">
               <div className="flex items-center justify-between pb-3 border-b border-purple-200">
                 <span className="text-sm text-gray-700 font-medium">Hourly Rate</span>
                 <span className="font-bold text-purple-600">₹{hourlyRate}</span>
@@ -347,7 +347,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
               </div>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-base font-bold text-gray-900">Total Payable</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   ₹{totalPrice}
                 </span>
               </div>
@@ -355,7 +355,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
           </div>
 
           {/* Footer with Razorpay Pay Button */}
-          <div className="p-6 border-t bg-gradient-to-r from-gray-50 to-purple-50 flex gap-3 flex-shrink-0">
+          <div className="p-6 border-t bg-linear-to-r from-gray-50 to-purple-50 flex gap-3 flex-shrink-0">
             <button
               onClick={onClose}
               disabled={loading}
@@ -366,7 +366,7 @@ function BookingModal({ companion, onClose, onConfirm, onShowLogin }) {
             <button
               onClick={handleConfirmAndPay}
               disabled={!date || loading}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 px-4 py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer"
             >
               {loading ? (
                 <>

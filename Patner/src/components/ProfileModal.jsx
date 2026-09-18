@@ -22,7 +22,7 @@ function ProfileModal({ companion, onClose, onHire }) {
         
         <div className="p-6 space-y-6">
           <div className="flex gap-6">
-            <div className="w-48 h-64 bg-gradient-to-br from-purple-200 to-pink-200 rounded-lg flex-shrink-0 flex items-center justify-center text-7xl">
+            <div className="w-48 h-64 bg-linear-to-br from-purple-200 to-pink-200 rounded-lg flex-shrink-0 flex items-center justify-center text-7xl">
               {companion.emoji}
             </div>
             <div className="flex-1">
@@ -48,7 +48,7 @@ function ProfileModal({ companion, onClose, onHire }) {
 
           <button 
             onClick={() => onHire(companion)}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition text-lg"
+            className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition text-lg"
           >
             Hire for ₹{companion.price}/hour
           </button>

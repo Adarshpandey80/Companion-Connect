@@ -11,7 +11,7 @@ function SuccessModal({ name, onClose }) {
         <p className="text-gray-600 mb-6">You've successfully joined Companion Connect.</p>
         <button
           onClick={onClose}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold"
+          className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold"
         >
           Continue
         </button>

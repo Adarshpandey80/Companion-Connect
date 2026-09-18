@@ -99,7 +99,7 @@ function Nav({ onBecome, scrollToSection, onUserLogout }) {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
           {/* Logo Icon */}
-          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-linear-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
             <span className="text-lg sm:text-xl font-bold text-white">♦</span>
           </div>
           {/* Logo Text */}
@@ -151,7 +151,7 @@ function Nav({ onBecome, scrollToSection, onUserLogout }) {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-white font-semibold cursor-pointer hover:shadow-lg transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-linear-to-br from-[#e879a0] to-[#b355e0] flex items-center justify-center text-white font-semibold cursor-pointer hover:shadow-lg transition-all duration-200"
                 title={user.fullName}
               >
                 {getInitials(user.fullName)}
@@ -160,7 +160,7 @@ function Nav({ onBecome, scrollToSection, onUserLogout }) {
               {/* Profile Dropdown Menu */}
               {profileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-[#e879a0]/10 to-[#b355e0]/10">
+                  <div className="px-4 py-3 border-b border-gray-100 bg-linear-to-r from-[#e879a0]/10 to-[#b355e0]/10">
                     <p className="text-sm font-semibold text-[#2d1b4e]">{user.fullName}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>

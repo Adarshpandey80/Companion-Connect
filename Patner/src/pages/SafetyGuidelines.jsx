@@ -37,7 +37,7 @@ function SafetyGuidelines() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-gradient-to-br from-[#fff9f5] to-[#f7f0ff]">
+    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-linear-to-br from-[#fff9f5] to-[#f7f0ff]">
       <div className="max-w-4xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-[#5e3d8c] mb-8 hover:text-[#e879a0] transition-colors">
           ← Back to Home

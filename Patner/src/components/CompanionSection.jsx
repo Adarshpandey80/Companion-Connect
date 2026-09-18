@@ -22,7 +22,7 @@ function CompanionCard({ c, onOpen, onHire }) {
         transform: hov ? 'translateY(-10px) scale(1.02)' : 'none'
       }}
     >
-      <div className="relative h-[200px] bg-gradient-to-r from-[#f3e5fb] to-[#fce4ec] flex items-center justify-center overflow-hidden">
+      <div className="relative h-[200px] bg-linear-to-r from-[#f3e5fb] to-[#fce4ec] flex items-center justify-center overflow-hidden">
         {c.images?.[0] ? (
           <img src={c.images[0]} alt={`${c.name} profile`} className="h-full w-full object-cover transition-transform duration-300" style={{ transform: hov ? 'scale(1.08)' : 'scale(1)' }} />
         ) : (
@@ -31,13 +31,13 @@ function CompanionCard({ c, onOpen, onHire }) {
           </span>
         )}
         <div 
-          className="absolute inset-0 bg-gradient-to-t from-[rgba(45,27,78,0.55)] via-transparent to-transparent transition-opacity duration-300"
+          className="absolute inset-0 bg-linear-to-t from-[rgba(45,27,78,0.55)] via-transparent to-transparent transition-opacity duration-300"
           style={{ opacity: hov ? 1 : 0 }}
         />
-        <div className="absolute top-3.5 left-3.5 bg-white/90 backdrop-blur-[8px] rounded-full px-3 py-1.25 text-[0.72rem] font-bold text-[#5e3d8c] flex items-center gap-1.25">
+        <div className="absolute top-3.5 left-3.5 bg-white/90 backdrop-blur-[8px] rounded-full px-3 py-1.5 text-[0.72rem] font-bold text-[#5e3d8c] flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block" /> Verified
         </div>
-        <div className="absolute top-3.5 right-3.5 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white rounded-full px-3.5 py-1.25 text-[0.8rem] font-bold">
+        <div className="absolute top-3.5 right-3.5 bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white rounded-full px-3.5 py-1.5 text-[0.8rem] font-bold">
           ₹{c.price}/hr
         </div>
       </div>
@@ -56,7 +56,7 @@ function CompanionCard({ c, onOpen, onHire }) {
         </div>
         <button 
           onClick={handleHireClick}
-          className="w-full py-3 bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white border-none rounded-[14px] text-[0.9rem] font-bold cursor-pointer"
+          className="w-full py-3 bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white border-none rounded-[14px] text-[0.9rem] font-bold cursor-pointer"
         >
           Hire Now
         </button>

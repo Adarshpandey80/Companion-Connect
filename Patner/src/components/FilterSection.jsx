@@ -46,7 +46,7 @@ function FilterSection({ onShowToast }) {
   const reset = () => { setGender("All"); setCity("Any"); setInterests([]); setRating("Any"); setPrice(1500); };
 
   return (
-    <section className="py-[100px] px-[6%] bg-gradient-to-r from-[#2d1b4e] to-[#5e3d8c] rounded-[40px] mx-[3%] text-white">
+    <section className="py-[100px] px-[6%] bg-linear-to-r from-[#2d1b4e] to-[#5e3d8c] rounded-[40px] mx-[3%] text-white">
       <Reveal>
         <div className="mb-[50px]">
           <SectionTag light>Advanced Search</SectionTag>
@@ -107,7 +107,7 @@ function FilterSection({ onShowToast }) {
           <div className="mt-8 flex gap-3.5 flex-wrap">
             <button 
               onClick={() => onShowToast("🔍 Filtering companions...")} 
-              className="bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white border-none px-8 py-[13px] rounded-full text-[0.9rem] font-bold cursor-pointer shadow-[0_4px_16px_rgba(232,121,160,0.35)] transition-transform duration-200 hover:translate-y-[-2px]"
+              className="bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white border-none px-8 py-[13px] rounded-full text-[0.9rem] font-bold cursor-pointer shadow-[0_4px_16px_rgba(232,121,160,0.35)] transition-transform duration-200 hover:translate-y-[-2px]"
             >
               Apply Filters
             </button>

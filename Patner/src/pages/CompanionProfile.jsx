@@ -36,7 +36,7 @@ function CompanionProfile({ companions, onBook, onChat }) {
   }
 
   return (
-    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-gradient-to-br from-[#fff9f5] to-[#f7f0ff]">
+    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-linear-to-br from-[#fff9f5] to-[#f7f0ff]">
       <div className="max-w-4xl mx-auto">
         <Link to="/find-companions" className="inline-flex items-center gap-2 text-[#5e3d8c] mb-8 hover:text-[#e879a0] transition-colors">
           ← Back to Companions
@@ -45,7 +45,7 @@ function CompanionProfile({ companions, onBook, onChat }) {
         {/* Header */}
         <div className="bg-white rounded-3xl p-8 shadow-xl mb-8">
           <div className="flex gap-6 items-start flex-wrap">
-            <div className="w-24 h-24 rounded-2xl flex items-center justify-center text-5xl bg-gradient-to-r from-[#f3e5fb] to-[#fce4ec] flex-shrink-0">
+            <div className="w-24 h-24 rounded-2xl flex items-center justify-center text-5xl bg-linear-to-r from-[#f3e5fb] to-[#fce4ec] flex-shrink-0">
               {companion.emoji}
             </div>
             <div>
@@ -55,7 +55,7 @@ function CompanionProfile({ companions, onBook, onChat }) {
                 <span>📍 {companion.location}</span>
                 <span>⭐ {companion.rating} ({companion.reviews} reviews)</span>
               </div>
-              <span className="inline-block bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-[18px] py-[6px] rounded-full text-[0.85rem] font-bold">
+              <span className="inline-block bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-[18px] py-[6px] rounded-full text-[0.85rem] font-bold">
                 ₹{companion.price} / hour
               </span>
             </div>
@@ -117,7 +117,7 @@ function CompanionProfile({ companions, onBook, onChat }) {
         <div className="flex gap-3 flex-wrap">
           <button 
             onClick={handleBook} 
-            className={`flex-1 min-w-[140px] py-4 rounded-xl text-base font-bold cursor-pointer transition-all duration-300 ${booked ? 'bg-[#22c55e]' : 'bg-gradient-to-r from-[#e879a0] to-[#b355e0]'} text-white border-none`}
+            className={`flex-1 min-w-[140px] py-4 rounded-xl text-base font-bold cursor-pointer transition-all duration-300 ${booked ? 'bg-[#22c55e]' : 'bg-linear-to-r from-[#e879a0] to-[#b355e0]'} text-white border-none`}
             style={{ transform: booked ? 'scale(0.98)' : 'none' }}
           >
             {booked ? "✅ Booking Sent!" : "📅 Book Now"}

@@ -12,7 +12,7 @@ function CompanionCard({ c, onOpen, onHire }) {
       onClick={() => onOpen && onOpen(c)}
       className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all cursor-pointer hover:scale-105"
     >
-      <div className="h-64 bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center text-4xl">
+      <div className="h-64 bg-linear-to-br from-purple-200 to-pink-200 flex items-center justify-center text-4xl">
         {c.emoji}
       </div>
       <div className="p-6">

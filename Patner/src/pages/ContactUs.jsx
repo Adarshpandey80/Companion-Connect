@@ -19,7 +19,7 @@ function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-gradient-to-br from-[#fff9f5] to-[#f7f0ff]">
+    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-linear-to-br from-[#fff9f5] to-[#f7f0ff]">
       <div className="max-w-4xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-[#5e3d8c] mb-8 hover:text-[#e879a0] transition-colors">
           ← Back to Home
@@ -98,7 +98,7 @@ function ContactUs() {
               </div>
               <button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white py-3 rounded-xl font-semibold hover:translate-y-[-2px] transition-transform"
+                className="w-full bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white py-3 rounded-xl font-semibold hover:translate-y-[-2px] transition-transform"
               >
                 Send Message
               </button>

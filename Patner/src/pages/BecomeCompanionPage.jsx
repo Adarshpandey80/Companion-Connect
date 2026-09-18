@@ -64,13 +64,13 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
     <>
       <Nav onBecome={onBecomeClick} scrollToSection={() => {}} />
       
-      <div className="min-h-screen bg-gradient-to-b from-white via-purple-50 to-white pt-20 pb-12">
+      <div className="min-h-screen bg-linear-to-b from-white via-purple-50 to-white pt-20 pb-12">
         {/* Hero Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2d1b4e] mb-4">
               Join Our Network of
-              <span className="block bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-transparent bg-clip-text">
+              <span className="block bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-transparent bg-clip-text">
                 Professional Companions
               </span>
             </h1>
@@ -79,7 +79,7 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
             </p>
             <button
               onClick={handleBecome}
-              className="bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
               Become a Companion
             </button>
@@ -122,7 +122,7 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
         </div>
 
         {/* How It Works */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 bg-linear-to-r from-purple-50 to-pink-50 rounded-2xl p-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-[#2d1b4e] text-center mb-12">
             Getting Started is Easy
           </h2>
@@ -135,14 +135,14 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
             ].map((item) => (
               <div key={item.step} className="relative">
                 <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-r from-[#e879a0] to-[#d5a8f0] flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
                     {item.step}
                   </div>
                   <h3 className="text-lg font-bold text-[#2d1b4e] mb-2">{item.title}</h3>
                   <p className="text-sm text-gray-600">{item.desc}</p>
                 </div>
                 {item.step < 4 && (
-                  <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-0.5 bg-gradient-to-r from-[#e879a0] to-[#d5a8f0]"></div>
+                  <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-0.5 bg-linear-to-r from-[#e879a0] to-[#d5a8f0]"></div>
                 )}
               </div>
             ))}
@@ -168,7 +168,7 @@ function BecomeCompanionPage({ onBecomeClick, onShowToast }) {
 
         {/* CTA Section */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] rounded-2xl p-12 text-white">
+          <div className="bg-linear-to-r from-[#e879a0] to-[#d5a8f0] rounded-2xl p-12 text-white">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Ready to Transform Your Income?
             </h2>

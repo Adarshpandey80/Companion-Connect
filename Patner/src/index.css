@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@theme {
+	--color-secondary-50: #faf5ff;
+	--color-secondary-500: #a855f7;
+	--color-secondary-600: #9333ea;
+	--color-accent-50: #fff7ed;
+	--color-accent-200: #fed7aa;
+	--color-accent-400: #fbbf24;
+	--color-accent-500: #f59e0b;
+	--color-accent-900: #78350f;
+}
+
+@utility smooth-transition {
+	transition-property: all;
+	transition-timing-function: ease;
+	transition-duration: 300ms;
+}

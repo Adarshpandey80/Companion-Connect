@@ -12,7 +12,7 @@ function ReviewsPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-gradient-to-br from-[#fff9f5] to-[#f7f0ff]">
+    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-linear-to-br from-[#fff9f5] to-[#f7f0ff]">
       <div className="max-w-6xl mx-auto">
         {/* Back Link */}
         <Link to="/" className="inline-flex items-center gap-2 text-[#5e3d8c] mb-8 hover:text-[#e879a0] transition-colors font-semibold">
@@ -68,7 +68,7 @@ function ReviewsPage() {
 
               {/* Reviewer Info */}
               <div className="flex items-center gap-3 pt-4 border-t border-[#f0e8ff]">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#f3e5fb] to-[#fce4ec] flex items-center justify-center text-lg">
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#f3e5fb] to-[#fce4ec] flex items-center justify-center text-lg">
                   {review.emoji}
                 </div>
                 <div>
@@ -83,7 +83,7 @@ function ReviewsPage() {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-[#e879a0] to-[#b355e0] rounded-3xl p-12 text-white text-center">
+        <div className="bg-linear-to-r from-[#e879a0] to-[#b355e0] rounded-3xl p-12 text-white text-center">
           <h2 className="text-3xl md:text-4xl font-['Playfair_Display',serif] mb-4">
             Ready to Have Your Own Great Experience?
           </h2>

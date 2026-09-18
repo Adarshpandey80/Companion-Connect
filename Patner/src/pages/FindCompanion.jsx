@@ -70,7 +70,7 @@ export default function CompanionProfile({ companions }) {
             className="lg:col-span-2"
           >
             <div className="space-y-3">
-              <div className="relative h-96 min-h-96 overflow-hidden rounded-3xl bg-gradient-to-br from-[#f3e5fb] via-[#fff4f7] to-[#f9dce8] shadow-xl lg:h-[34rem]">
+              <div className="relative h-96 min-h-96 overflow-hidden rounded-3xl bg-linear-to-br from-[#f3e5fb] via-[#fff4f7] to-[#f9dce8] shadow-xl lg:h-[34rem]">
                 {images.length > 0 ? (
                   <img src={images[activeImage]} alt={`${companion.name} profile photo ${activeImage + 1}`} className="h-full w-full object-cover" />
                 ) : (
@@ -175,7 +175,7 @@ export default function CompanionProfile({ companions }) {
                 onClick={() => setShowBookingModal(true)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-linear-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
               >
                 <Calendar size={19} />
                 Book {companion.name.split(' ')[0]}
@@ -183,7 +183,7 @@ export default function CompanionProfile({ companions }) {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-gradient-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 rounded-lg bg-gray-800 font-semibold text-blue-500 bg-linear-to-r from-secondary-500 to-accent-500 shadow-lg hover:shadow-xl smooth-transition flex items-center justify-center gap-2"
               >
                 <MessageCircle size={20}  className="text-blue-500" />
                 <span className=" font-semibold text-blue-500">Send Message</span>

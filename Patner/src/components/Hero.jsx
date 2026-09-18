@@ -47,7 +47,7 @@ function Hero({ onFind, onBecome }) {
         <div className="flex gap-4 flex-wrap animate-fadeUp">
           <button 
             onClick={onFind} 
-            className="bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-[34px] py-[15px] rounded-full text-base font-bold border-none cursor-pointer shadow-[0_6px_24px_rgba(232,121,160,0.4)] transition-transform duration-200 hover:-translate-y-0.75"
+            className="bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-[34px] py-[15px] rounded-full text-base font-bold border-none cursor-pointer shadow-[0_6px_24px_rgba(232,121,160,0.4)] transition-transform duration-200 hover:-translate-y-[3px]"
           >
             🔍 Find a Companion
           </button>

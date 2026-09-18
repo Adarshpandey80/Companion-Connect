@@ -180,7 +180,7 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl w-full max-w-md p-8 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-linear-to-r from-[#e879a0] to-[#d5a8f0] flex items-center justify-center">
               <CheckCircle size={32} className="text-white" />
             </div>
           </div>
@@ -205,7 +205,7 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto shadow-2xl">
 
-        <div className="sticky top-0 border-b flex justify-between items-center p-6 bg-gradient-to-r from-[#2d1b4e] to-[#6b5b7a]">
+        <div className="sticky top-0 border-b flex justify-between items-center p-6 bg-linear-to-r from-[#2d1b4e] to-[#6b5b7a]">
           <h2 className="text-2xl font-bold text-white">
             Become a Professional Companion
           </h2>
@@ -499,7 +499,7 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
                   onClick={() => handleServiceToggle(service)}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     formData.services.includes(service)
-                      ? 'bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white'
+                      ? 'bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white'
                       : 'bg-gray-100 text-gray-700 border border-gray-300 hover:border-[#e879a0]'
                   }`}
                 >
@@ -569,7 +569,7 @@ function BecomeCompanionForm({ onClose, onSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-linear-to-r from-[#e879a0] to-[#d5a8f0] text-white py-3 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Submitting...' : 'Submit Application'}
           </button>

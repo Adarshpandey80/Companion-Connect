@@ -11,7 +11,7 @@ function HowItWorksPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-gradient-to-br from-[#fff9f5] to-[#f7f0ff]">
+    <div className="min-h-screen pt-32 px-[6%] pb-20 bg-linear-to-br from-[#fff9f5] to-[#f7f0ff]">
       <div className="max-w-4xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-[#5e3d8c] mb-8 hover:text-[#e879a0] transition-colors">
           ← Back to Home
@@ -26,7 +26,7 @@ function HowItWorksPage() {
             <div key={step.number} className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
               <div className="flex items-start gap-6 flex-wrap md:flex-nowrap">
                 <div className="text-center">
-                  <div className="font-['Playfair_Display',serif] text-5xl font-bold bg-gradient-to-r from-[#f2a0b0] to-[#d5a8f0] bg-clip-text text-transparent mb-2">{step.number}</div>
+                  <div className="font-['Playfair_Display',serif] text-5xl font-bold bg-linear-to-r from-[#f2a0b0] to-[#d5a8f0] bg-clip-text text-transparent mb-2">{step.number}</div>
                   <div className="text-3xl">{step.icon}</div>
                 </div>
                 <div>
@@ -41,7 +41,7 @@ function HowItWorksPage() {
         <div className="mt-12 text-center">
           <Link 
             to="/find-companions" 
-            className="inline-block bg-gradient-to-r from-[#e879a0] to-[#b355e0] text-white px-8 py-3 rounded-full font-semibold hover:translate-y-[-2px] transition-transform"
+            className="inline-block bg-linear-to-r from-[#e879a0] to-[#b355e0] text-white px-8 py-3 rounded-full font-semibold hover:translate-y-[-2px] transition-transform"
           >
             Find Your Companion Now →
           </Link>
